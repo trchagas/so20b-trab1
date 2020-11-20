@@ -26,11 +26,13 @@ public class Main {
 		
 		cpu.alteraPrograma(programa);
 		
-		cpu.alteraDados(dados);
+		//cpu.alteraDados(dados);
 		
 		while(cpu.getCodigotInterrupcao() == Estado.NORMAL.ordinal()) {
 			cpu.executa();
 		}
+		
+		cpu.alteraDados(dados);
 		
 		System.out.println(cpu.instrucaoAtual());
 		System.out.println(dados[0]);

@@ -29,12 +29,16 @@ public class Cpu {
 		}
 	}
 	
-	public void alteraDados(int[] memoriaDados) {
-		Arrays.fill(this.memoriaDados, 0);
+	public void alteraDados(int[] memoriaDados) { ////////////////////////////////////////////////////////////
+		//Arrays.fill(this.memoriaDados, 0);
 		
-		for(int i=0; i<memoriaPrograma.length; i++) {
-			this.memoriaDados[i] = memoriaDados[i];
+		//int[] memoriaDados = new int[];
+		
+		for(int i=0; i<memoriaDados.length; i++) {
+			memoriaDados[i] = this.memoriaDados[i];
 		}
+		
+		//return memoriaDados;
 	}
 	
 	public int[] salvaDados() { /////////////////////////////////////
@@ -61,52 +65,63 @@ public class Cpu {
 	
 	public void executa() {
 		String[] comandoSeparado; 
-		int argumentoInt; 
+		int argumentoInt = 0; 
 		String instrucao;
 		
 		for(int i=0; i<this.memoriaPrograma.length; i++) {
 			comandoSeparado = this.memoriaPrograma[i].split(" ");
 			
 			instrucao = comandoSeparado[0];
-			argumentoInt = Integer.parseInt(comandoSeparado[1]);
+			
+			if(comandoSeparado.length > 1)
+				argumentoInt = Integer.parseInt(comandoSeparado[1]);
 			
 			switch(comandoSeparado[0]) {
 				case "CARGI" :
 					this.regAcumulador = argumentoInt;
+					this.regContadorPrograma += 1;
 					break;
 					
 				case "CARGM" :
 					this.regAcumulador = this.memoriaDados[argumentoInt];
+					this.regContadorPrograma += 1;
 					break;
 					
 				case "CARGX" :
 					this.regAcumulador = this.memoriaDados[this.memoriaDados[argumentoInt]];
+					this.regContadorPrograma += 1;
 					break;
 					
 				case "ARMM" :
 					this.memoriaDados[argumentoInt] = this.regAcumulador;
+					this.regContadorPrograma += 1;
 					break;
 					
 				case "ARMX" :
 					this.memoriaDados[this.memoriaDados[argumentoInt]] = this.regAcumulador;
+					this.regContadorPrograma += 1;
 					break;
 					
 				case "SOMA" :
 					this.regAcumulador += this.memoriaDados[argumentoInt];
+					this.regContadorPrograma += 1;
 					break;
 					
 				case "NEG" :
 					this.regAcumulador *= 1;
+					this.regContadorPrograma += 1;
 					break;
 					
 				case "DESVZ" :
 					if(this.regAcumulador == 0)
 						this.regContadorPrograma = argumentoInt;
+					this.regContadorPrograma += 1;
 					break;
 					
 				default :
 					this.codigoInterrupcao = Estado.INSTRUCAO_ILEGAL.ordinal();
 			}
+				
 		}
 	}
 }
