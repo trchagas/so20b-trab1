@@ -1,14 +1,9 @@
 package cpu;
 
 import cpu.Cpu;
+import estado.Estado;
 
 public class CpuEstado {
-	enum Estado {
-		NORMAL,
-		INSTRUCAO_ILEGAL,
-	    VIOLACAO_DE_MEMORIA
-	};
-	
 	int regContadorPrograma, regAcumulador, codigoInterrupcao;
 	
 	public CpuEstado() {

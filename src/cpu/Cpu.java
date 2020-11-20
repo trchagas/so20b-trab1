@@ -3,7 +3,7 @@ package cpu;
 import java.util.Arrays;
 
 import cpu.CpuEstado;
-import cpu.CpuEstado.Estado;
+import estado.Estado;
 
 public class Cpu {
 	int regContadorPrograma, regAcumulador, codigoInterrupcao;
@@ -41,7 +41,7 @@ public class Cpu {
 		return this.memoriaDados;
 	}
 	
-	public int geCodigotInterrupcao() {
+	public int getCodigotInterrupcao() {
 		return this.codigoInterrupcao;
 	}
 	
