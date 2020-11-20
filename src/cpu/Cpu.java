@@ -80,7 +80,7 @@ public class Cpu {
 					break;
 					
 				case "CARGX" :
-					this.regAcumulador = this.memoriaDados[this.memoriaDados[argumentoInt]];]
+					this.regAcumulador = this.memoriaDados[this.memoriaDados[argumentoInt]];
 					break;
 					
 				case "ARMM" :
