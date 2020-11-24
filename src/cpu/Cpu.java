@@ -29,19 +29,13 @@ public class Cpu {
 		}
 	}
 	
-	public void alteraDados(int[] memoriaDados) { ////////////////////////////////////////////////////////////
-		//Arrays.fill(this.memoriaDados, 0);
-		
-		//int[] memoriaDados = new int[];
-		
+	public void alteraDados(int[] memoriaDados) {
 		for(int i=0; i<memoriaDados.length; i++) {
 			memoriaDados[i] = this.memoriaDados[i];
 		}
-		
-		//return memoriaDados;
 	}
 	
-	public int[] salvaDados() { /////////////////////////////////////
+	public int[] salvaDados() {
 		return this.memoriaDados;
 	}
 	

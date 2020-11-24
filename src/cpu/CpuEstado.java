@@ -17,4 +17,12 @@ public class CpuEstado {
 		this.regAcumulador = cpu.regAcumulador;
 		this.codigoInterrupcao = cpu.codigoInterrupcao; 
 	}
+	
+	public void cpu_estado_altera_acumulador(int novoAcumulador) {
+		this.regAcumulador = novoAcumulador;
+	}
+	
+	public int cpuEstadoAcumulador() {
+		return this.regAcumulador;
+	}
 }
