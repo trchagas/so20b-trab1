@@ -29,15 +29,21 @@ public class Cpu {
 		}
 	}
 	
-	public void alteraDados(int[] memoriaDados) {
+	public void alteraDados(int[] memoriaDados) { ////////////////////////////////////////////////////////////
+		//Arrays.fill(this.memoriaDados, 0);
+		
+		//int[] memoriaDados = new int[];
+		
 		for(int i=0; i<memoriaDados.length; i++) {
 			memoriaDados[i] = this.memoriaDados[i];
 		}
+		
+		//return memoriaDados;
 	}
 	
-//	public int[] salvaDados() {
-//		return this.memoriaDados;
-//	}
+	public int[] salvaDados() { /////////////////////////////////////
+		return this.memoriaDados;
+	}
 	
 	public int getCodigotInterrupcao() {
 		return this.codigoInterrupcao;
