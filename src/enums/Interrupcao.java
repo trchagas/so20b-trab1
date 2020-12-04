@@ -1,6 +1,6 @@
-package estado;
+package enums;
 
-public enum Estado {
+public enum Interrupcao {
 	NORMAL,
 	INSTRUCAO_ILEGAL,
     VIOLACAO_DE_MEMORIA
