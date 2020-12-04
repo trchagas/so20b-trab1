@@ -59,7 +59,6 @@ public class Cpu {
 		int argumentoInt = 0;
 		String argumentoString;
 		
-	
 		comandoSeparado = this.memoriaPrograma[this.regContadorPrograma].split(" ");
 		
 		instrucao = comandoSeparado[0];

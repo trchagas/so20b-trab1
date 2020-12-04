@@ -14,7 +14,6 @@ import java.util.Scanner;
 
 import controlador.Controlador;
 import cpu.Cpu;
-import cpu.CpuEstado;
 import enums.Interrupcao;
 
 public class SistemaOperacional {
@@ -45,7 +44,7 @@ public class SistemaOperacional {
 	}
 		
 	public void chamaExecucao() {
-		controlador.controlaExecucao(this.cpu, this);
+		this.controlador.controlaExecucao(this.cpu, this);
 		this.cpu.alteraDados(dados);
 		System.out.println(cpu.instrucaoAtual());
 		System.out.println(dados[0]);
@@ -59,7 +58,6 @@ public class SistemaOperacional {
 			switch(chamadaSistema) {
 				case "PARA":
 					System.out.println("Instrucao PARA executada. Encerrando execucao.");
-					this.cpu.resetaCodigoInterrupcao();
 					break;
 				case "LE":
 					this.cpu.setAcumulador(leES());

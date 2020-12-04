@@ -1,36 +1,39 @@
 package timer;
 
+import enums.Interrupcao;
+
 public class Timer {
-	int interrupcao, contador, intervalo, termino;
+	int contador, intervalo, termino;
+	Interrupcao interrupcao;
 	
 	public Timer() {
-		this.interrupcao = 0;
 		this.contador = 0;
-		this.intervalo = 0;
-		this.termino = 0;
+		this.interrupcao = Interrupcao.NORMAL;
 	}
 	
-	public void passagemInicio(int intervalo, String mensagem) {
-		
+	public void passagemInicio(int intervalo) {
+		this.intervalo = intervalo;
 	}
 	
-	public void passagemFim(int termino, String mensagem) {
-		
+	public void passagemFim(int termino) {
+		this.termino = termino;
 	}
 	
 	public void contaPassagem() {
-		
+		this.contador += this.intervalo;
 	}
 	
-	public int verificaInterrupcao() {
-		return this.interrupcao;
+	public Interrupcao verificaInterrupcao() {
+		Interrupcao interrupcaoTemp = this.interrupcao;
+		this.interrupcao = Interrupcao.NORMAL;
+		return interrupcaoTemp;
 	}
 	
 	public int tempoAtual() {
 		return this.contador;
 	}
 	
-	
+	//public void pedeInterrupcao(tipo, periodo, codigo)
 	
 	
 }
