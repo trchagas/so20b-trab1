@@ -161,4 +161,8 @@ public class Cpu {
 	public int getAcumulador() {
 		return this.regAcumulador;
 	}
+	
+	public void cpuDormindo() {
+		this.codigoInterrupcao = Interrupcao.DORMINDO;
+	}
 }

@@ -51,6 +51,7 @@ public class SistemaOperacional {
 	}
 	
 	public void trataInterrupcao(Interrupcao codigoInterrupcao) {
+		Interrupcao temp;
 		if (codigoInterrupcao == Interrupcao.VIOLACAO_DE_MEMORIA) {
 			System.out.println("Ocorreu uma Violacao de Memoria. Encerrando execucao");
 		} else if (codigoInterrupcao == Interrupcao.INSTRUCAO_ILEGAL) {
@@ -60,10 +61,14 @@ public class SistemaOperacional {
 					System.out.println("Instrucao PARA executada. Encerrando execucao.");
 					break;
 				case "LE":
+					temp = this.cpu.getCodigotInterrupcao();
+					this.cpu.cpuDormindo();
 					this.cpu.setAcumulador(leES());
 					this.cpu.resetaCodigoInterrupcao();
 					break;
 				case "GRAVA":
+					temp = this.cpu.getCodigotInterrupcao();
+					this.cpu.cpuDormindo();
 					gravaES(this.cpu.getAcumulador());
 					this.cpu.resetaCodigoInterrupcao();
 					break;
