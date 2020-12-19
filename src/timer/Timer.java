@@ -24,7 +24,7 @@ public class Timer {
 //	}
 	
 	public void contaPassagem() {
-		this.contador += this.intervalo;
+		this.contador += 1;
 	}
 	
 	public String verificaInterrupcao() {
