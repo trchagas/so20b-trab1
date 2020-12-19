@@ -14,11 +14,12 @@ public class Cpu {
 	public Cpu(int tamInstrucoes, int tamDados) {
 		this.memoriaPrograma = new String[tamInstrucoes];
 		this.memoriaDados = new int[tamDados];
-		this.alteraEstado(new CpuEstado());
+		this.estadoInicializa();
 	}
 	
 	public void alteraPrograma(String[] memoriaPrograma) {
-		Arrays.fill(this.memoriaPrograma, null);
+		//Arrays.fill(this.memoriaPrograma, null);
+		this.memoriaPrograma = new String[memoriaPrograma.length];
 		
 		for(int i=0; i<memoriaPrograma.length; i++) {
 			this.memoriaPrograma[i] = memoriaPrograma[i];
@@ -146,6 +147,13 @@ public class Cpu {
 	
 	public CpuEstado salvaEstado() {
 		return new CpuEstado(this.regContadorPrograma, this.regAcumulador, this.codigoInterrupcao);
+	}
+	
+	public void estadoInicializa() {
+		CpuEstado cpuEstado = new CpuEstado();
+		this.regContadorPrograma = cpuEstado.regContadorPrograma;
+		this.regAcumulador = cpuEstado.regAcumulador;
+		this.codigoInterrupcao = cpuEstado.codigoInterrupcao;
 	}
 	
 	public void alteraEstado(CpuEstado cpuEstado) {

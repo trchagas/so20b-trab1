@@ -9,16 +9,23 @@ import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 import controlador.Controlador;
 import cpu.Cpu;
+import cpu.CpuEstado;
 import enums.Interrupcao;
+import job.Job;
+import timer.Timer;
 
 public class SistemaOperacional {
+	public static final int MEMORIA_PROGRAMA = 20;
+	public static final int MEMORIA_DADOS = 5;
+	
 	Cpu cpu;
-	String[] programa;
+	
 	int[] dados;
 	
 	File dispositivosES;
@@ -27,31 +34,26 @@ public class SistemaOperacional {
 	Controlador controlador;
 	
 	public SistemaOperacional() {
-		programa = new String[] {
-			    "CARGI 10",
-			    "ARMM 2",
-			    "CARGI 32",
-			    "SOMA 2",
-			    "ARMM 0",
-			    "PARA"
-		};
-		this.dados = new int[4];
-		this.cpu = new Cpu(programa.length, dados.length);
-		
+		this.dados = new int[MEMORIA_DADOS];
+		this.cpu = new Cpu(MEMORIA_PROGRAMA, MEMORIA_DADOS);
 		this.controlador = new Controlador();
-		this.cpu.alteraPrograma(programa);
 		this.criaES();
 	}
 		
-	public void chamaExecucao() {
-		this.controlador.controlaExecucao(this.cpu, this);
+	public void chamaExecucao(Job job) {
+		this.cpu.alteraPrograma(job.getPrograma());
+		
+		this.controlador.controlaExecucao(this.cpu, this, job);
 		this.cpu.alteraDados(dados);
-		System.out.println(cpu.instrucaoAtual());
-		System.out.println(dados[0]);
+		//System.out.println(cpu.instrucaoAtual());
+		for(int dado : dados)
+			System.out.println(dado);
+		
+		job.salvaEstado(this.cpu.salvaEstado());
+		this.cpu.estadoInicializa();
 	}
 	
-	public void trataInterrupcao(Interrupcao codigoInterrupcao) {
-		Interrupcao temp;
+	public void trataInterrupcao(Interrupcao codigoInterrupcao, Job job, Timer timer) {
 		if (codigoInterrupcao == Interrupcao.VIOLACAO_DE_MEMORIA) {
 			System.out.println("Ocorreu uma Violacao de Memoria. Encerrando execucao");
 		} else if (codigoInterrupcao == Interrupcao.INSTRUCAO_ILEGAL) {
@@ -61,22 +63,27 @@ public class SistemaOperacional {
 					System.out.println("Instrucao PARA executada. Encerrando execucao.");
 					break;
 				case "LE":
-					temp = this.cpu.getCodigotInterrupcao();
+					job.salvaEstado(this.cpu.salvaEstado());
 					this.cpu.cpuDormindo();
+					timer.pedeInterrupcao(false, 2, "Operacao E/S LE");
 					this.cpu.setAcumulador(leES());
-					this.cpu.resetaCodigoInterrupcao();
 					break;
 				case "GRAVA":
-					temp = this.cpu.getCodigotInterrupcao();
+					job.salvaEstado(this.cpu.salvaEstado());
 					this.cpu.cpuDormindo();
+					timer.pedeInterrupcao(false, 2, "Operacao E/S GRAVA");
 					gravaES(this.cpu.getAcumulador());
-					this.cpu.resetaCodigoInterrupcao();
 					break;
 				default:
 					System.out.println("Instrucao Ilegal. Encerrando execucao.");
 					
 			}
 		}
+	}
+	
+	public void trataInterrupcaoTimer(String codigo, Job job) {
+		this.cpu.alteraEstado(job.getEstado());
+		System.out.println("Interrupcao do Timer: " + codigo);
 	}
 	
 	private void criaES() {

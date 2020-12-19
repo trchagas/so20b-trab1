@@ -15,22 +15,22 @@ public class Timer {
 		this.filaInterrupcoes = new ArrayList<InterrupcaoTimer>();
 	}
 	
-//	public void passagemInicio(int intervalo) {
-//		this.intervalo = intervalo;
-//	}
+	public void passagemInicio(int intervalo) {
+		this.intervalo = intervalo;
+	}
 //	
 //	public void passagemFim(int termino) {
 //		this.termino = termino;
 //	}
 	
 	public void contaPassagem() {
-		this.contador += 1;
+		this.contador += this.intervalo;
 	}
 	
-	public Interrupcao verificaInterrupcao() {
-		Interrupcao interrupcaoTemp;
+	public String verificaInterrupcao() {
+		String interrupcaoTemp;
+		
 		for(int i = 0; i < filaInterrupcoes.size(); i++) {
-			//if(filaInterrupcoes.get(i).codigo != Interrupcao.NORMAL) {
 			if(filaInterrupcoes.get(i).periodica) {
 				if(this.contador % filaInterrupcoes.get(i).periodo == 0) {
 					interrupcaoTemp = filaInterrupcoes.get(i).codigo;
@@ -44,9 +44,8 @@ public class Timer {
 				filaInterrupcoes.remove(filaInterrupcoes.get(i));
 				return interrupcaoTemp;
 			}
-			//}
 		}
-		return Interrupcao.NORMAL;
+		return " ";
 	}
 	
 	public ArrayList<InterrupcaoTimer> getFilaInterrupcoes() {
@@ -57,7 +56,7 @@ public class Timer {
 		return this.contador;
 	}
 	
-	public void pedeInterrupcao(boolean periodica, int periodo, Interrupcao codigo) {
+	public void pedeInterrupcao(boolean periodica, int periodo, String codigo) {
 		filaInterrupcoes.add(new InterrupcaoTimer(periodica, periodo, codigo));
 	}
 	

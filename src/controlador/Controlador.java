@@ -2,7 +2,9 @@ package controlador;
 
 import cpu.Cpu;
 import enums.Interrupcao;
+import job.Job;
 import so.SistemaOperacional;
+import timer.InterrupcaoTimer;
 import timer.Timer;
 
 public class Controlador {
@@ -10,11 +12,9 @@ public class Controlador {
 	
 	public Controlador() {
 		timer = new Timer();
-		//timer.passagemInicio(1);
-		//timer.passagemFim(5);
 	}
 	
-	public void controlaExecucao(Cpu cpu, SistemaOperacional so) {
+	public void controlaExecucao(Cpu cpu, SistemaOperacional so, Job job) {
 		while(cpu.getCodigotInterrupcao() == Interrupcao.NORMAL) {
 			
 			timer.contaPassagem();
@@ -22,14 +22,12 @@ public class Controlador {
 			
 			cpu.executa();
 			
-			if(cpu.getCodigotInterrupcao() == Interrupcao.INSTRUCAO_ILEGAL || cpu.getCodigotInterrupcao() == Interrupcao.VIOLACAO_DE_MEMORIA) {
-				timer.pedeInterrupcao(false, 0, cpu.getCodigotInterrupcao());
+			if(cpu.getCodigotInterrupcao() == Interrupcao.INSTRUCAO_ILEGAL || cpu.getCodigotInterrupcao() == Interrupcao.VIOLACAO_DE_MEMORIA) 
+				so.trataInterrupcao(cpu.getCodigotInterrupcao(), job, timer);
 				
-			}
-			while(timer.getFilaInterrupcoes().size() != 0) {
-				so.trataInterrupcao(timer.verificaInterrupcao());
-			}
-			
+			for(int i = 0; i < timer.getFilaInterrupcoes().size(); i++) {
+				so.trataInterrupcaoTimer(timer.verificaInterrupcao(), job);
+			}	
 		}
 	}
 }
