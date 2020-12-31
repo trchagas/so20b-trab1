@@ -4,11 +4,13 @@ import java.util.ArrayList;
 
 import job.Job;
 import so.SistemaOperacional;
+import timer.Timer;
 
 public class Main {
 
 	public static void main(String[] args) {
 		SistemaOperacional so = new SistemaOperacional();
+		Timer timer = new Timer();
 		
 		String[] programa = new String[] {
 				"LE",
@@ -47,11 +49,12 @@ public class Main {
 		filaJob.add(new Job(programa));
 		filaJob.add(new Job(programa2));
 		
+		int dataLancamento = 0;
 		for(int i=0; i<filaJob.size(); i++) {
-			if(i==0)
-				filaJob.get(i).setDataLancamento(0);
 			System.out.println("Execucao do programa " + (i+1) + ":");
-			so.chamaExecucao(filaJob.get(i));
+			filaJob.get(i).setDataLancamento(dataLancamento);
+			so.chamaExecucao(filaJob.get(i), timer);
+			dataLancamento = timer.tempoAtual();
 		}
 	}
 

@@ -40,11 +40,10 @@ public class SistemaOperacional {
 		this.criaES();
 	}
 		
-	public void chamaExecucao(Job job) {
+	public void chamaExecucao(Job job, Timer timer) {
 		this.cpu.alteraPrograma(job.getPrograma());
 		
-		int dataLancamento = this.controlador.controlaExecucao(this.cpu, this, job);
-		job.setDataLancamento(dataLancamento);
+		this.controlador.controlaExecucao(this.cpu, this, job, timer);
 		
 		this.cpu.alteraDados(dados);
 		//System.out.println(cpu.instrucaoAtual());

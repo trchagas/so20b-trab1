@@ -8,13 +8,12 @@ import timer.InterrupcaoTimer;
 import timer.Timer;
 
 public class Controlador {
-	Timer timer;
 	
 	public Controlador() {
-		timer = new Timer();
+		
 	}
 	
-	public int controlaExecucao(Cpu cpu, SistemaOperacional so, Job job) {
+	public void controlaExecucao(Cpu cpu, SistemaOperacional so, Job job, Timer timer) {
 		while(cpu.getCodigotInterrupcao() == Interrupcao.NORMAL || cpu.getCodigotInterrupcao() == Interrupcao.DORMINDO) {
 			
 			System.out.println("Tempo do timer: " + timer.tempoAtual());
@@ -30,6 +29,5 @@ public class Controlador {
 				so.trataInterrupcaoTimer(timer.verificaInterrupcao(), timer, job);
 			}	
 		}
-		return timer.tempoAtual();
 	}
 }

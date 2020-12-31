@@ -39,4 +39,8 @@ public class Job {
 	public void setDataLancamento(int dataLancamento) {
 		this.dataLancamento = dataLancamento;
 	}
+	
+	public int getDataLancamento() {
+		return this.dataLancamento;
+	}
 }
