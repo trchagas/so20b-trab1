@@ -47,8 +47,8 @@ public class Main {
 		ArrayList<Job> filaJob;
 		filaJob = new ArrayList<Job>();
 		
-		filaJob.add(new Job(programa));
-		filaJob.add(new Job(programa2));
+		filaJob.add(new Job(programa, filaJob.size()));
+		filaJob.add(new Job(programa2, filaJob.size()));
 		
 		int dataLancamento = 0;
 		for(int i=0; i<filaJob.size(); i++) {

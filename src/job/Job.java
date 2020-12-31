@@ -9,23 +9,24 @@ import enums.EstadoJob;
 public class Job {
 	String[] programa;
 	int tamPrograma;
-//	File dispositivosES;
-//	FileWriter escritaES;
+	
 	int dataLancamento;
 	float prioridade;
 	
 	EstadoJob estado;
 	CpuEstado cpuSalva;
 	
-	int id;
+	int localDados;
+	int tempoES;
 	
-	public Job(String[] programa) {
+	public Job(String[] programa, int idArquivo) {
 		this.programa = programa;
 		this.tamPrograma = programa.length;
 		this.estado = EstadoJob.PRONTO;
-		//this.criaES();
-		this.dataLancamento = dataLancamento;
+		
 		this.prioridade = 0.5f;
+
+		this.tempoES = 2;
 	}
 
 	public String[] getPrograma() {
@@ -46,5 +47,13 @@ public class Job {
 	
 	public int getDataLancamento() {
 		return this.dataLancamento;
+	}
+	
+	public int getTempoES() {
+		return this.tempoES;
+	}
+	
+	public void setLocalDados(int localDados) {
+		this.localDados = localDados;
 	}
 }

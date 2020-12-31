@@ -70,17 +70,18 @@ public class SistemaOperacional {
 					System.out.println("Instrucao PARA executada. Encerrando execucao.");
 					break;
 				case "LE":
-					timer.pedeInterrupcao(false, 2, "Operacao E/S LE", timer.tempoAtual());
+					timer.pedeInterrupcao(false, job.getTempoES(), "Operacao E/S LE", timer.tempoAtual());
 					System.out.println("Inicio de interrupcao do Timer: Operacao E/S LE");
 					this.cpu.setAcumulador(leES(argumento));
 					job.salvaEstado(this.cpu.salvaEstado());
 					this.cpu.cpuDormindo();
 					break;
 				case "GRAVA":
-					timer.pedeInterrupcao(false, 2, "Operacao E/S GRAVA", timer.tempoAtual());
+					timer.pedeInterrupcao(false, job.getTempoES(), "Operacao E/S GRAVA", timer.tempoAtual());
 					System.out.println("Inicio de interrupcao do Timer: Operacao E/S GRAVA");
 					gravaES(this.cpu.getAcumulador(), argumento);
 					job.salvaEstado(this.cpu.salvaEstado());
+					job.setLocalDados(argumento);
 					this.cpu.cpuDormindo();
 					break;
 				default:
