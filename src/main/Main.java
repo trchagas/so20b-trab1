@@ -18,8 +18,8 @@ public class Main {
 			    "CARGI 32",
 			    "SOMA 2",
 			    "ARMM 0",
-			    "GRAVA 1",
-				"LE 1",
+			    "GRAVA arquivo",
+				"LE arquivo",
 			    "PARA"
 		};
 		String[] programa2 = new String[] {

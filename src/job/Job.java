@@ -2,6 +2,7 @@ package job;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
 
 import cpu.CpuEstado;
 import enums.EstadoJob;
@@ -16,7 +17,7 @@ public class Job {
 	EstadoJob estado;
 	CpuEstado cpuSalva;
 	
-	int localDados;
+	ArrayList<String> localDados;
 	int tempoES;
 	
 	public Job(String[] programa) {
@@ -27,6 +28,7 @@ public class Job {
 		this.prioridade = 0.5f;
 
 		this.tempoES = 2;
+		localDados = new ArrayList<String>();
 	}
 
 	public String[] getPrograma() {
@@ -53,7 +55,7 @@ public class Job {
 		return this.tempoES;
 	}
 	
-	public void setLocalDados(int localDados) {
-		this.localDados = localDados;
+	public void setLocalDados(String localDado) {
+		this.localDados.add(localDado);
 	}
 }

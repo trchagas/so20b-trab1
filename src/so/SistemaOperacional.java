@@ -55,12 +55,12 @@ public class SistemaOperacional {
 	
 	public void trataInterrupcao(InterrupcaoCPU codigoInterrupcao, String instrucao, Job job, Timer timer) {
 		String[] comandoSeparado = instrucao.split(" ");
-		int argumento = -1;
+		String argumento = "default";
 		
 		String chamadaSistema = comandoSeparado[0];
 		
 		if(instrucao.split(" ").length > 1)
-			argumento = Integer.parseInt(comandoSeparado[1]);
+			argumento = comandoSeparado[1];
 		
 		if (codigoInterrupcao == InterrupcaoCPU.VIOLACAO_DE_MEMORIA) {
 			System.out.println("Ocorreu uma Violacao de Memoria. Encerrando execucao.");
@@ -105,9 +105,9 @@ public class SistemaOperacional {
 //		}
 	}
 	
-	private int leES(int numArquivo) {
+	private int leES(String nomeArquivo) {
 		try {
-			File le = new File(numArquivo + ".txt");
+			File le = new File(nomeArquivo + ".txt");
 			Scanner myReader = new Scanner(le);
 			if(myReader.hasNextLine()) {
 				String novoAcumuladorString = myReader.nextLine();
@@ -123,10 +123,10 @@ public class SistemaOperacional {
 		return 0;
 	}
 	
-	private void gravaES(int regAcumulador, int numArquivo) {
+	private void gravaES(int regAcumulador, String nomeArquivo) {
 		try {
-		  File cria = new File(numArquivo + ".txt");
-	      FileWriter escreve = new FileWriter(numArquivo + ".txt");
+		  File cria = new File(nomeArquivo + ".txt");
+	      FileWriter escreve = new FileWriter(nomeArquivo + ".txt");
 	      escreve.write(String.valueOf(regAcumulador));
 	      escreve.close();
 	    } catch (Exception e) {
