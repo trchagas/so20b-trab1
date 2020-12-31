@@ -28,7 +28,7 @@ public class Job {
 		this.prioridade = 0.5f;
 
 		this.tempoES = 2;
-		localDados = new ArrayList<String>();
+		this.localDados = new ArrayList<String>();
 	}
 
 	public String[] getPrograma() {
