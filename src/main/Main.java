@@ -11,6 +11,7 @@ public class Main {
 		SistemaOperacional so = new SistemaOperacional();
 		
 		String[] programa = new String[] {
+				"LE",
 			    "CARGI 10",
 			    "ARMM 2",
 			    "CARGI 32",

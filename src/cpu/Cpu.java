@@ -73,7 +73,6 @@ public class Cpu {
 			}
 		}
 		
-		
 		switch(comandoSeparado[0]) {
 			case "CARGI" :
 				this.regAcumulador = argumentoInt;
@@ -85,7 +84,7 @@ public class Cpu {
 					this.regAcumulador = this.memoriaDados[argumentoInt];
 					this.regContadorPrograma += 1;
 				} catch (Exception e) {
-					System.out.println("Ocorreu uma violacao de memoria");
+					//System.out.println("Ocorreu uma violacao de memoria");
 					this.codigoInterrupcao = Interrupcao.VIOLACAO_DE_MEMORIA;
 				}
 				break;
@@ -95,7 +94,7 @@ public class Cpu {
 					this.regAcumulador = this.memoriaDados[this.memoriaDados[argumentoInt]];
 					this.regContadorPrograma += 1;
 				} catch (Exception e) {
-					System.out.println("Ocorreu uma violacao de memoria");
+					//System.out.println("Ocorreu uma violacao de memoria");
 					this.codigoInterrupcao = Interrupcao.VIOLACAO_DE_MEMORIA;
 				}
 				break;
@@ -105,7 +104,7 @@ public class Cpu {
 					this.memoriaDados[argumentoInt] = this.regAcumulador;
 					this.regContadorPrograma += 1;
 				} catch (Exception e) {
-					System.out.println("Ocorreu uma violacao de memoria");
+					//System.out.println("Ocorreu uma violacao de memoria");
 					this.codigoInterrupcao = Interrupcao.VIOLACAO_DE_MEMORIA;
 				}
 				break;
@@ -115,7 +114,7 @@ public class Cpu {
 					this.memoriaDados[this.memoriaDados[argumentoInt]] = this.regAcumulador;
 					this.regContadorPrograma += 1;
 				} catch (Exception e) {
-					System.out.println("Ocorreu uma violacao de memoria");
+					//System.out.println("Ocorreu uma violacao de memoria");
 					this.codigoInterrupcao = Interrupcao.VIOLACAO_DE_MEMORIA;
 				}
 				break;
@@ -125,7 +124,7 @@ public class Cpu {
 					this.regAcumulador += this.memoriaDados[argumentoInt];
 					this.regContadorPrograma += 1;
 				} catch (Exception e) {
-					System.out.println("Ocorreu uma violacao de memoria");
+					//System.out.println("Ocorreu uma violacao de memoria");
 					this.codigoInterrupcao = Interrupcao.VIOLACAO_DE_MEMORIA;
 				}
 				break;
@@ -173,4 +172,5 @@ public class Cpu {
 	public void cpuDormindo() {
 		this.codigoInterrupcao = Interrupcao.DORMINDO;
 	}
+	
 }

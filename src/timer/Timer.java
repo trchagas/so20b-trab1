@@ -31,18 +31,18 @@ public class Timer {
 		String interrupcaoTemp;
 		
 		for(int i = 0; i < filaInterrupcoes.size(); i++) {
-			if(filaInterrupcoes.get(i).periodica) {
-				if(this.contador % filaInterrupcoes.get(i).periodo == 0) {
+			if(this.contador == filaInterrupcoes.get(i).contadorInicial + filaInterrupcoes.get(i).periodo) {
+				if(filaInterrupcoes.get(i).periodica) {
 					interrupcaoTemp = filaInterrupcoes.get(i).codigo;
 					filaInterrupcoes.add(filaInterrupcoes.get(i));
 					filaInterrupcoes.remove(filaInterrupcoes.get(i));
 					return interrupcaoTemp;
 				}
-				
-			}else {
-				interrupcaoTemp = filaInterrupcoes.get(i).codigo;
-				filaInterrupcoes.remove(filaInterrupcoes.get(i));
-				return interrupcaoTemp;
+				else {
+					interrupcaoTemp = filaInterrupcoes.get(i).codigo;
+					filaInterrupcoes.remove(filaInterrupcoes.get(i));
+					return interrupcaoTemp;
+				}	
 			}
 		}
 		return " ";
@@ -56,8 +56,8 @@ public class Timer {
 		return this.contador;
 	}
 	
-	public void pedeInterrupcao(boolean periodica, int periodo, String codigo) {
-		filaInterrupcoes.add(new InterrupcaoTimer(periodica, periodo, codigo));
+	public void pedeInterrupcao(boolean periodica, int periodo, String codigo, int contadorInicial) {
+		filaInterrupcoes.add(new InterrupcaoTimer(periodica, periodo, codigo, contadorInicial));
 	}
 	
 	
