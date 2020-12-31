@@ -125,7 +125,7 @@ public class SistemaOperacional {
 	
 	private void gravaES(int regAcumulador) {
 		try {
-	      FileWriter escreve = new FileWriter("1.txt");
+	      FileWriter escreve = new FileWriter("0.txt");
 	      escreve.write(regAcumulador + "\n");
 	      escreve.close();
 	    } catch (Exception e) {
