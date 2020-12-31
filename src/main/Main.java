@@ -13,12 +13,13 @@ public class Main {
 		Timer timer = new Timer();
 		
 		String[] programa = new String[] {
-				"LE",
 			    "CARGI 10",
 			    "ARMM 2",
 			    "CARGI 32",
 			    "SOMA 2",
 			    "ARMM 0",
+			    "GRAVA 1",
+				"LE 1",
 			    "PARA"
 		};
 		String[] programa2 = new String[] {

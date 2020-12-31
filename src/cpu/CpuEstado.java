@@ -1,18 +1,18 @@
 package cpu;
 
-import enums.Interrupcao;
+import enums.InterrupcaoCPU;
 
 public class CpuEstado {
 	int regContadorPrograma, regAcumulador;
-	Interrupcao codigoInterrupcao;
+	InterrupcaoCPU codigoInterrupcao;
 	
 	public CpuEstado() {
 		this.regContadorPrograma = 0;
 		this.regAcumulador = 0;
-		this.codigoInterrupcao = Interrupcao.NORMAL;
+		this.codigoInterrupcao = InterrupcaoCPU.NORMAL;
 	}
 	
-	public CpuEstado(int regContadorPrograma, int regAcumulador, Interrupcao codigoInterrupcao) {
+	public CpuEstado(int regContadorPrograma, int regAcumulador, InterrupcaoCPU codigoInterrupcao) {
 		this.regContadorPrograma = regContadorPrograma;
 		this.regAcumulador = regAcumulador;
 		this.codigoInterrupcao = codigoInterrupcao;

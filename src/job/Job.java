@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 
 import cpu.CpuEstado;
+import enums.EstadoJob;
 
 public class Job {
 	String[] programa;
@@ -13,15 +14,18 @@ public class Job {
 	int dataLancamento;
 	float prioridade;
 	
-	CpuEstado estado;
+	EstadoJob estado;
+	CpuEstado cpuSalva;
+	
 	int id;
 	
 	public Job(String[] programa) {
 		this.programa = programa;
 		this.tamPrograma = programa.length;
+		this.estado = EstadoJob.PRONTO;
 		//this.criaES();
 		this.dataLancamento = dataLancamento;
-		//this.prioridade
+		this.prioridade = 0.5f;
 	}
 
 	public String[] getPrograma() {
@@ -29,11 +33,11 @@ public class Job {
 	}
 	
 	public void salvaEstado(CpuEstado cpuEstado) {
-		this.estado = cpuEstado;
+		this.cpuSalva = cpuEstado;
 	}
 	
 	public CpuEstado getEstado() {
-		return this.estado;
+		return this.cpuSalva;
 	}
 	
 	public void setDataLancamento(int dataLancamento) {

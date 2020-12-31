@@ -1,6 +1,6 @@
 package timer;
 
-import enums.Interrupcao;
+import enums.InterrupcaoCPU;
 
 public class InterrupcaoTimer {
 	boolean periodica;

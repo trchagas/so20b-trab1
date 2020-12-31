@@ -1,6 +1,6 @@
 package enums;
 
-public enum Interrupcao {
+public enum InterrupcaoCPU {
 	NORMAL,
 	INSTRUCAO_ILEGAL,
     VIOLACAO_DE_MEMORIA,

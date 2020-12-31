@@ -2,7 +2,7 @@ package timer;
 
 import java.util.ArrayList;
 
-import enums.Interrupcao;
+import enums.InterrupcaoCPU;
 
 public class Timer {
 	int contador, intervalo, termino;

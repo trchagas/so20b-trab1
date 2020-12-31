@@ -3,11 +3,11 @@ package cpu;
 import java.util.Arrays;
 
 import cpu.CpuEstado;
-import enums.Interrupcao;
+import enums.InterrupcaoCPU;
 
 public class Cpu {
 	int regContadorPrograma, regAcumulador;
-	Interrupcao codigoInterrupcao;
+	InterrupcaoCPU codigoInterrupcao;
 	String[] memoriaPrograma;
 	int[] memoriaDados;
 	
@@ -36,14 +36,14 @@ public class Cpu {
 		return this.memoriaDados;
 	}
 	
-	public Interrupcao getCodigotInterrupcao() {
+	public InterrupcaoCPU getCodigotInterrupcao() {
 		return this.codigoInterrupcao;
 	}
 	
 	public void resetaCodigoInterrupcao(){
-		if(this.codigoInterrupcao == Interrupcao.NORMAL) return;
+		if(this.codigoInterrupcao == InterrupcaoCPU.NORMAL) return;
 		
-		this.codigoInterrupcao = Interrupcao.NORMAL;
+		this.codigoInterrupcao = InterrupcaoCPU.NORMAL;
 		this.regContadorPrograma += 1;
 	}
 	
@@ -85,7 +85,7 @@ public class Cpu {
 					this.regContadorPrograma += 1;
 				} catch (Exception e) {
 					//System.out.println("Ocorreu uma violacao de memoria");
-					this.codigoInterrupcao = Interrupcao.VIOLACAO_DE_MEMORIA;
+					this.codigoInterrupcao = InterrupcaoCPU.VIOLACAO_DE_MEMORIA;
 				}
 				break;
 				
@@ -95,7 +95,7 @@ public class Cpu {
 					this.regContadorPrograma += 1;
 				} catch (Exception e) {
 					//System.out.println("Ocorreu uma violacao de memoria");
-					this.codigoInterrupcao = Interrupcao.VIOLACAO_DE_MEMORIA;
+					this.codigoInterrupcao = InterrupcaoCPU.VIOLACAO_DE_MEMORIA;
 				}
 				break;
 				
@@ -105,7 +105,7 @@ public class Cpu {
 					this.regContadorPrograma += 1;
 				} catch (Exception e) {
 					//System.out.println("Ocorreu uma violacao de memoria");
-					this.codigoInterrupcao = Interrupcao.VIOLACAO_DE_MEMORIA;
+					this.codigoInterrupcao = InterrupcaoCPU.VIOLACAO_DE_MEMORIA;
 				}
 				break;
 				
@@ -115,7 +115,7 @@ public class Cpu {
 					this.regContadorPrograma += 1;
 				} catch (Exception e) {
 					//System.out.println("Ocorreu uma violacao de memoria");
-					this.codigoInterrupcao = Interrupcao.VIOLACAO_DE_MEMORIA;
+					this.codigoInterrupcao = InterrupcaoCPU.VIOLACAO_DE_MEMORIA;
 				}
 				break;
 				
@@ -125,7 +125,7 @@ public class Cpu {
 					this.regContadorPrograma += 1;
 				} catch (Exception e) {
 					//System.out.println("Ocorreu uma violacao de memoria");
-					this.codigoInterrupcao = Interrupcao.VIOLACAO_DE_MEMORIA;
+					this.codigoInterrupcao = InterrupcaoCPU.VIOLACAO_DE_MEMORIA;
 				}
 				break;
 				
@@ -140,7 +140,7 @@ public class Cpu {
 				break;
 				
 			default :
-				this.codigoInterrupcao = Interrupcao.INSTRUCAO_ILEGAL;
+				this.codigoInterrupcao = InterrupcaoCPU.INSTRUCAO_ILEGAL;
 		}
 	}
 	
@@ -170,7 +170,7 @@ public class Cpu {
 	}
 	
 	public void cpuDormindo() {
-		this.codigoInterrupcao = Interrupcao.DORMINDO;
+		this.codigoInterrupcao = InterrupcaoCPU.DORMINDO;
 	}
 	
 }

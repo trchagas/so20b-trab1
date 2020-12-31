@@ -16,7 +16,7 @@ import java.util.Scanner;
 import controlador.Controlador;
 import cpu.Cpu;
 import cpu.CpuEstado;
-import enums.Interrupcao;
+import enums.InterrupcaoCPU;
 import job.Job;
 import timer.Timer;
 
@@ -37,7 +37,6 @@ public class SistemaOperacional {
 		this.dados = new int[MEMORIA_DADOS];
 		this.cpu = new Cpu(MEMORIA_PROGRAMA, MEMORIA_DADOS);
 		this.controlador = new Controlador();
-		this.criaES();
 	}
 		
 	public void chamaExecucao(Job job, Timer timer) {
@@ -54,28 +53,35 @@ public class SistemaOperacional {
 		this.cpu.estadoInicializa();
 	}
 	
-	public void trataInterrupcao(Interrupcao codigoInterrupcao, Job job, Timer timer) {
-		if (codigoInterrupcao == Interrupcao.VIOLACAO_DE_MEMORIA) {
+	public void trataInterrupcao(InterrupcaoCPU codigoInterrupcao, String instrucao, Job job, Timer timer) {
+		String[] comandoSeparado = instrucao.split(" ");
+		int argumento = -1;
+		
+		String chamadaSistema = comandoSeparado[0];
+		
+		if(instrucao.split(" ").length > 1)
+			argumento = Integer.parseInt(comandoSeparado[1]);
+		
+		if (codigoInterrupcao == InterrupcaoCPU.VIOLACAO_DE_MEMORIA) {
 			System.out.println("Ocorreu uma Violacao de Memoria. Encerrando execucao.");
-		} else if (codigoInterrupcao == Interrupcao.INSTRUCAO_ILEGAL) {
-			String chamadaSistema = this.cpu.instrucaoAtual();
+		} else if (codigoInterrupcao == InterrupcaoCPU.INSTRUCAO_ILEGAL) {
 			switch(chamadaSistema) {
 				case "PARA":
 					System.out.println("Instrucao PARA executada. Encerrando execucao.");
 					break;
 				case "LE":
-					job.salvaEstado(this.cpu.salvaEstado());
-					this.cpu.cpuDormindo();
 					timer.pedeInterrupcao(false, 2, "Operacao E/S LE", timer.tempoAtual());
 					System.out.println("Inicio de interrupcao do Timer: Operacao E/S LE");
-					this.cpu.setAcumulador(leES());
-					break;
-				case "GRAVA":
+					this.cpu.setAcumulador(leES(argumento));
 					job.salvaEstado(this.cpu.salvaEstado());
 					this.cpu.cpuDormindo();
+					break;
+				case "GRAVA":
 					timer.pedeInterrupcao(false, 2, "Operacao E/S GRAVA", timer.tempoAtual());
 					System.out.println("Inicio de interrupcao do Timer: Operacao E/S GRAVA");
-					gravaES(this.cpu.getAcumulador());
+					gravaES(this.cpu.getAcumulador(), argumento);
+					job.salvaEstado(this.cpu.salvaEstado());
+					this.cpu.cpuDormindo();
 					break;
 				default:
 					System.out.println("Instrucao Ilegal. Encerrando execucao.");
@@ -86,48 +92,41 @@ public class SistemaOperacional {
 	
 	public void trataInterrupcaoTimer(String codigo, Timer timer, Job job) {
 		//this.cpu.alteraEstado(job.getEstado());
-		if(codigo != " ")
+		if(codigo != " ") {
 			System.out.println("Fim de interrupcao do Timer: " + codigo);
-		else {
 			cpu.alteraEstado(job.getEstado());
 			cpu.resetaCodigoInterrupcao();
-		}
-		
+		}	
+			
 //		if(timer.getFilaInterrupcoes().size() == 0 && cpu.getCodigotInterrupcao() == Interrupcao.DORMINDO) {
 //			cpu.alteraEstado(job.getEstado());
 //			cpu.resetaCodigoInterrupcao();
 //		}
 	}
 	
-	private void criaES() {
+	private int leES(int numArquivo) {
 		try {
-		      File leitura = new File("0.txt");
-		      File escrita = new File("1.txt");
-		} catch (Exception e) {
-		      e.printStackTrace();
-	    }
+			File le = new File(numArquivo + ".txt");
+			Scanner myReader = new Scanner(le);
+			if(myReader.hasNextLine()) {
+				String novoAcumuladorString = myReader.nextLine();
+				int novoAcumuladorInt = Integer.parseInt(novoAcumuladorString);
+				myReader.close();
+				return novoAcumuladorInt;
+			} else {
+				System.out.println("Operacao de E/S LE: Nao ha nenhum valor nesse dispositivo.");
+			}
+	   } catch (Exception e) {
+	     e.printStackTrace();
+	   }
+		return 0;
 	}
 	
-	private int leES() {
-		Scanner input = new Scanner(System.in);
-		System.out.println("Insira o valor do acumulador: ");
-		int novoAcumulador = input.nextInt();
-		
+	private void gravaES(int regAcumulador, int numArquivo) {
 		try {
-	      FileWriter escreve = new FileWriter("1.txt");
-	      escreve.write(novoAcumulador + "\n");
-	      escreve.close();
-	    } catch (Exception e) {
-	      e.printStackTrace();
-	    }
-		
-		return novoAcumulador;
-	}
-	
-	private void gravaES(int regAcumulador) {
-		try {
-	      FileWriter escreve = new FileWriter("0.txt");
-	      escreve.write(regAcumulador + "\n");
+		  File cria = new File(numArquivo + ".txt");
+	      FileWriter escreve = new FileWriter(numArquivo + ".txt");
+	      escreve.write(String.valueOf(regAcumulador));
 	      escreve.close();
 	    } catch (Exception e) {
 	      e.printStackTrace();

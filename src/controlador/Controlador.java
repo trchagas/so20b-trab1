@@ -1,7 +1,7 @@
 package controlador;
 
 import cpu.Cpu;
-import enums.Interrupcao;
+import enums.InterrupcaoCPU;
 import job.Job;
 import so.SistemaOperacional;
 import timer.InterrupcaoTimer;
@@ -14,16 +14,16 @@ public class Controlador {
 	}
 	
 	public void controlaExecucao(Cpu cpu, SistemaOperacional so, Job job, Timer timer) {
-		while(cpu.getCodigotInterrupcao() == Interrupcao.NORMAL || cpu.getCodigotInterrupcao() == Interrupcao.DORMINDO) {
+		while(cpu.getCodigotInterrupcao() == InterrupcaoCPU.NORMAL || cpu.getCodigotInterrupcao() == InterrupcaoCPU.DORMINDO) {
 			
 			System.out.println("Tempo do timer: " + timer.tempoAtual());
 			timer.contaPassagem();
 			
-			if(cpu.getCodigotInterrupcao() == Interrupcao.NORMAL)
+			if(cpu.getCodigotInterrupcao() == InterrupcaoCPU.NORMAL)
 				cpu.executa();
 			
-			if(cpu.getCodigotInterrupcao() == Interrupcao.INSTRUCAO_ILEGAL || cpu.getCodigotInterrupcao() == Interrupcao.VIOLACAO_DE_MEMORIA) 
-				so.trataInterrupcao(cpu.getCodigotInterrupcao(), job, timer);
+			if(cpu.getCodigotInterrupcao() == InterrupcaoCPU.INSTRUCAO_ILEGAL || cpu.getCodigotInterrupcao() == InterrupcaoCPU.VIOLACAO_DE_MEMORIA) 
+				so.trataInterrupcao(cpu.getCodigotInterrupcao(), cpu.instrucaoAtual(), job, timer);
 				
 			for(int i = 0; i < timer.getFilaInterrupcoes().size(); i++) {
 				so.trataInterrupcaoTimer(timer.verificaInterrupcao(), timer, job);
