@@ -19,7 +19,7 @@ public class Job {
 	int localDados;
 	int tempoES;
 	
-	public Job(String[] programa, int idArquivo) {
+	public Job(String[] programa) {
 		this.programa = programa;
 		this.tamPrograma = programa.length;
 		this.estado = EstadoJob.PRONTO;
