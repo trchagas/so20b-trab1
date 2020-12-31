@@ -8,8 +8,8 @@ import cpu.CpuEstado;
 public class Job {
 	String[] programa;
 	int tamPrograma;
-	File dispositivosES;
-	FileWriter escritaES;
+//	File dispositivosES;
+//	FileWriter escritaES;
 	int dataLancamento;
 	float prioridade;
 	
@@ -20,7 +20,7 @@ public class Job {
 		this.programa = programa;
 		this.tamPrograma = programa.length;
 		//this.criaES();
-		//this.dataLancamento = dataLancamento;
+		this.dataLancamento = dataLancamento;
 		//this.prioridade
 	}
 
@@ -34,5 +34,9 @@ public class Job {
 	
 	public CpuEstado getEstado() {
 		return this.estado;
+	}
+	
+	public void setDataLancamento(int dataLancamento) {
+		this.dataLancamento = dataLancamento;
 	}
 }

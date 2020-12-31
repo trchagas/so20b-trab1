@@ -48,6 +48,8 @@ public class Main {
 		filaJob.add(new Job(programa2));
 		
 		for(int i=0; i<filaJob.size(); i++) {
+			if(i==0)
+				filaJob.get(i).setDataLancamento(0);
 			System.out.println("Execucao do programa " + (i+1) + ":");
 			so.chamaExecucao(filaJob.get(i));
 		}

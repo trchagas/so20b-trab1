@@ -14,11 +14,11 @@ public class Controlador {
 		timer = new Timer();
 	}
 	
-	public void controlaExecucao(Cpu cpu, SistemaOperacional so, Job job) {
+	public int controlaExecucao(Cpu cpu, SistemaOperacional so, Job job) {
 		while(cpu.getCodigotInterrupcao() == Interrupcao.NORMAL || cpu.getCodigotInterrupcao() == Interrupcao.DORMINDO) {
 			
-			timer.contaPassagem();
 			System.out.println("Tempo do timer: " + timer.tempoAtual());
+			timer.contaPassagem();
 			
 			if(cpu.getCodigotInterrupcao() == Interrupcao.NORMAL)
 				cpu.executa();
@@ -30,5 +30,6 @@ public class Controlador {
 				so.trataInterrupcaoTimer(timer.verificaInterrupcao(), timer, job);
 			}	
 		}
+		return timer.tempoAtual();
 	}
 }

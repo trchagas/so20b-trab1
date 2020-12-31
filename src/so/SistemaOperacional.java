@@ -43,7 +43,9 @@ public class SistemaOperacional {
 	public void chamaExecucao(Job job) {
 		this.cpu.alteraPrograma(job.getPrograma());
 		
-		this.controlador.controlaExecucao(this.cpu, this, job);
+		int dataLancamento = this.controlador.controlaExecucao(this.cpu, this, job);
+		job.setDataLancamento(dataLancamento);
+		
 		this.cpu.alteraDados(dados);
 		//System.out.println(cpu.instrucaoAtual());
 		for(int dado : dados)
