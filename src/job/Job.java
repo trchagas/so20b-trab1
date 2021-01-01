@@ -17,7 +17,7 @@ public class Job {
 	EstadoJob estado;
 	CpuEstado cpuSalva;
 	
-	ArrayList<String> localDados;
+	ArrayList<JobLocalDado> listaLocalDados;
 	int tempoES;
 	
 	public Job(String[] programa) {
@@ -28,7 +28,7 @@ public class Job {
 		this.prioridade = 0.5f;
 
 		this.tempoES = 2;
-		this.localDados = new ArrayList<String>();
+		this.listaLocalDados = new ArrayList<JobLocalDado>();
 	}
 
 	public String[] getPrograma() {
@@ -55,7 +55,11 @@ public class Job {
 		return this.tempoES;
 	}
 	
-	public void setLocalDados(String localDado) {
-		this.localDados.add(localDado);
+	public void addLocalDado(String nomeArquivo, int linhaDado) {
+		listaLocalDados.add(new JobLocalDado(nomeArquivo, linhaDado));
+	}
+	
+	public ArrayList<JobLocalDado> getListaLocalDados() {
+		return this.listaLocalDados;
 	}
 }

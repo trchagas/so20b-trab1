@@ -40,6 +40,8 @@ public class SistemaOperacional {
 	}
 		
 	public void chamaExecucao(Job job, Timer timer) {
+		timer.pedeInterrupcao(true, 4, "Interrupcao periodica do SO", timer.tempoAtual());
+		
 		this.cpu.alteraPrograma(job.getPrograma());
 		
 		this.controlador.controlaExecucao(this.cpu, this, job, timer);
@@ -72,16 +74,15 @@ public class SistemaOperacional {
 				case "LE":
 					timer.pedeInterrupcao(false, job.getTempoES(), "Operacao E/S LE", timer.tempoAtual());
 					System.out.println("Inicio de interrupcao do Timer: Operacao E/S LE");
-					this.cpu.setAcumulador(leES(argumento));
+					this.cpu.setAcumulador(leES(argumento, job));
 					job.salvaEstado(this.cpu.salvaEstado());
 					this.cpu.cpuDormindo();
 					break;
 				case "GRAVA":
 					timer.pedeInterrupcao(false, job.getTempoES(), "Operacao E/S GRAVA", timer.tempoAtual());
 					System.out.println("Inicio de interrupcao do Timer: Operacao E/S GRAVA");
-					gravaES(this.cpu.getAcumulador(), argumento);
+					gravaES(this.cpu.getAcumulador(), argumento, job);
 					job.salvaEstado(this.cpu.salvaEstado());
-					job.setLocalDados(argumento);
 					this.cpu.cpuDormindo();
 					break;
 				default:
@@ -91,44 +92,91 @@ public class SistemaOperacional {
 		}
 	}
 	
-	public void trataInterrupcaoTimer(String codigo, Timer timer, Job job) {
-		//this.cpu.alteraEstado(job.getEstado());
-		if(codigo != " ") {
+	public void trataInterrupcaoTimer(String codigo, Timer timer, Job job, boolean periodica) {
+		if(periodica) {
+			System.out.println("Fim de interrupcao Periodica do Timer: " + codigo);
+		}
+		else if(codigo != " ") {
 			System.out.println("Fim de interrupcao do Timer: " + codigo);
 			cpu.alteraEstado(job.getEstado());
 			cpu.resetaCodigoInterrupcao();
-		}	
-			
-//		if(timer.getFilaInterrupcoes().size() == 0 && cpu.getCodigotInterrupcao() == Interrupcao.DORMINDO) {
-//			cpu.alteraEstado(job.getEstado());
-//			cpu.resetaCodigoInterrupcao();
-//		}
+		}
 	}
 	
-	private int leES(String nomeArquivo) {
+//	private int leES(String nomeArquivo) {
+//		try {
+//			File le = new File(nomeArquivo + ".txt");
+//			Scanner myReader = new Scanner(le);
+//			if(myReader.hasNextLine()) {
+//				String novoAcumuladorString = myReader.nextLine();
+//				int novoAcumuladorInt = Integer.parseInt(novoAcumuladorString);
+//				myReader.close();
+//				return novoAcumuladorInt;
+//			} else {
+//				System.out.println("Operacao de E/S LE: Nao ha nenhum valor nesse dispositivo.");
+//			}
+//	   } catch (Exception e) {
+//	     e.printStackTrace();
+//	   }
+//		return 0;
+//	}
+//	
+//	private void gravaES(int regAcumulador, String nomeArquivo) {
+//		try {
+//		  File cria = new File(nomeArquivo + ".txt");
+//	      FileWriter escreve = new FileWriter(nomeArquivo + ".txt");
+//	      escreve.write(String.valueOf(regAcumulador + "\n"));
+//	      escreve.close();
+//	    } catch (Exception e) {
+//	      e.printStackTrace();
+//	    }
+//	}
+	
+	private int leES(String nomeArquivo, Job job) {
 		try {
 			File le = new File(nomeArquivo + ".txt");
-			Scanner myReader = new Scanner(le);
-			if(myReader.hasNextLine()) {
-				String novoAcumuladorString = myReader.nextLine();
-				int novoAcumuladorInt = Integer.parseInt(novoAcumuladorString);
-				myReader.close();
-				return novoAcumuladorInt;
-			} else {
-				System.out.println("Operacao de E/S LE: Nao ha nenhum valor nesse dispositivo.");
+			Scanner scanner = new Scanner(le);
+			
+			for(int i=0; i<job.getListaLocalDados().size(); i++) {
+				if(Files.readAllLines(Paths.get(nomeArquivo + ".txt")).get(job.getListaLocalDados().get(i).getLinhaDado()) != null) {
+					String novoAcumuladorString = Files.readAllLines(Paths.get(nomeArquivo + ".txt")).get(job.getListaLocalDados().get(i).getLinhaDado());
+					int novoAcumuladorInt = Integer.parseInt(novoAcumuladorString);
+					scanner.close();
+					return novoAcumuladorInt;
+				} else {
+					System.out.println("Operacao de E/S LE: Nao ha nenhum valor nesse dispositivo.");
+				}
 			}
+					
 	   } catch (Exception e) {
 	     e.printStackTrace();
 	   }
-		return 0;
+		return cpu.getAcumulador();
 	}
 	
-	private void gravaES(int regAcumulador, String nomeArquivo) {
+	private void gravaES(int regAcumulador, String nomeArquivo, Job job) {
 		try {
 		  File cria = new File(nomeArquivo + ".txt");
 	      FileWriter escreve = new FileWriter(nomeArquivo + ".txt");
-	      escreve.write(String.valueOf(regAcumulador));
+	      escreve.append(String.valueOf(regAcumulador + "\n"));
 	      escreve.close();
+	      
+	      int linhaDado = 0;
+	      Scanner scanner = new Scanner(cria);
+	      while(scanner.hasNextLine())
+	    	  linhaDado+=1;
+	      scanner.close();
+	      for(int i=0; i<job.getListaLocalDados().size(); i++) {
+	    	  if(job.getListaLocalDados().get(i).getNomeArquivo() == nomeArquivo) {
+	    		  job.getListaLocalDados().get(i).setLinhasDado(linhaDado);
+	    	  	  return;
+	    	  }
+	    	  else {
+	    		  job.addLocalDado(nomeArquivo, linhaDado);
+	    		  return;
+	    	  } 
+	      }
+	      
 	    } catch (Exception e) {
 	      e.printStackTrace();
 	    }

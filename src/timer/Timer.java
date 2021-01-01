@@ -34,6 +34,7 @@ public class Timer {
 			if(this.contador == filaInterrupcoes.get(i).contadorInicial + filaInterrupcoes.get(i).periodo) {
 				if(filaInterrupcoes.get(i).periodica) {
 					interrupcaoTemp = filaInterrupcoes.get(i).codigo;
+					filaInterrupcoes.get(i).periodo += filaInterrupcoes.get(i).periodo;
 					filaInterrupcoes.add(filaInterrupcoes.get(i));
 					filaInterrupcoes.remove(filaInterrupcoes.get(i));
 					return interrupcaoTemp;

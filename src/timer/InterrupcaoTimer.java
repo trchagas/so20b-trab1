@@ -22,4 +22,8 @@ public class InterrupcaoTimer {
 	public void setContadorInicial(int novoContadorInicial) {
 		this.contadorInicial = novoContadorInicial;
 	}
+	
+	public boolean isPeriodica() {
+		return this.periodica;
+	}
 }
