@@ -1,18 +1,18 @@
 package timer;
 
-import enums.InterrupcaoCPU;
-
 public class InterrupcaoTimer {
 	boolean periodica;
 	int periodo;
 	String codigo;
 	int contadorInicial;
+	boolean valida;
 	
 	public InterrupcaoTimer(boolean periodica, int periodo, String codigo, int contadorInicial) {
 		this.periodica = periodica;
 		this.periodo = periodo;
 		this.codigo = codigo;
 		this.contadorInicial = contadorInicial;
+		this.valida = true;
 	}
 	
 	public String getCodigo() {
@@ -25,5 +25,17 @@ public class InterrupcaoTimer {
 	
 	public boolean isPeriodica() {
 		return this.periodica;
+	}
+	
+	public void incrementaPeriodo() {
+		this.contadorInicial += this.periodo;
+	}
+	
+	public void invalidaInterrupcao() {
+		this.valida = false;
+	}
+	
+	public boolean isValida() {
+		return this.valida;
 	}
 }

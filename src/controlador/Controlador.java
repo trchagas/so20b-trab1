@@ -26,10 +26,11 @@ public class Controlador {
 				so.trataInterrupcao(cpu.getCodigotInterrupcao(), cpu.instrucaoAtual(), job, timer);
 				
 			for(int i = 0; i < timer.getFilaInterrupcoes().size(); i++) {
+				String interrupcaoTimer = timer.verificaInterrupcao(i);
 				boolean isPeriodica = timer.getFilaInterrupcoes().get(i).isPeriodica();
-				String interrupcaoTimer = timer.verificaInterrupcao();
-				so.trataInterrupcaoTimer(interrupcaoTimer, timer, job, isPeriodica);
+				so.trataInterrupcaoTimer(interrupcaoTimer, job, isPeriodica);	
 			}	
+			timer.limpaFilaInterrupcoes();
 		}
 	}
 }

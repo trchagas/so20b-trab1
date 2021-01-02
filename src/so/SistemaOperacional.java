@@ -33,15 +33,14 @@ public class SistemaOperacional {
 	
 	Controlador controlador;
 	
-	public SistemaOperacional() {
+	public SistemaOperacional(Timer timer) {
 		this.dados = new int[MEMORIA_DADOS];
 		this.cpu = new Cpu(MEMORIA_PROGRAMA, MEMORIA_DADOS);
 		this.controlador = new Controlador();
+		timer.pedeInterrupcao(true, 4, "Interrupcao periodica do SO", timer.tempoAtual());
 	}
 		
 	public void chamaExecucao(Job job, Timer timer) {
-		timer.pedeInterrupcao(true, 4, "Interrupcao periodica do SO", timer.tempoAtual());
-		
 		this.cpu.alteraPrograma(job.getPrograma());
 		
 		this.controlador.controlaExecucao(this.cpu, this, job, timer);
@@ -92,14 +91,16 @@ public class SistemaOperacional {
 		}
 	}
 	
-	public void trataInterrupcaoTimer(String codigo, Timer timer, Job job, boolean periodica) {
-		if(periodica) {
-			System.out.println("Fim de interrupcao Periodica do Timer: " + codigo);
-		}
-		else if(codigo != " ") {
-			System.out.println("Fim de interrupcao do Timer: " + codigo);
-			cpu.alteraEstado(job.getEstado());
-			cpu.resetaCodigoInterrupcao();
+	public void trataInterrupcaoTimer(String codigo, Job job, boolean periodica) {
+		if(codigo != "Nao ha interrupcao") {
+			if(periodica) {
+				System.out.println("Fim de interrupcao Periodica do Timer: " + codigo);
+			}
+			else {
+				System.out.println("Fim de interrupcao do Timer: " + codigo);
+				cpu.alteraEstado(job.getEstado());
+				cpu.resetaCodigoInterrupcao();
+			}
 		}
 	}
 	
@@ -151,7 +152,7 @@ public class SistemaOperacional {
 	   } catch (Exception e) {
 	     e.printStackTrace();
 	   }
-		return cpu.getAcumulador();
+	   return cpu.getAcumulador();
 	}
 	
 	private void gravaES(int regAcumulador, String nomeArquivo, Job job) {
@@ -159,13 +160,14 @@ public class SistemaOperacional {
 		  File cria = new File(nomeArquivo + ".txt");
 	      FileWriter escreve = new FileWriter(nomeArquivo + ".txt");
 	      escreve.append(String.valueOf(regAcumulador + "\n"));
-	      escreve.close();
 	      
 	      int linhaDado = 0;
 	      Scanner scanner = new Scanner(cria);
 	      while(scanner.hasNextLine())
 	    	  linhaDado+=1;
+	      escreve.close();
 	      scanner.close();
+	      
 	      for(int i=0; i<job.getListaLocalDados().size(); i++) {
 	    	  if(job.getListaLocalDados().get(i).getNomeArquivo() == nomeArquivo) {
 	    		  job.getListaLocalDados().get(i).setLinhasDado(linhaDado);

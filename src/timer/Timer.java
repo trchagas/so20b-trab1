@@ -27,26 +27,24 @@ public class Timer {
 		this.contador += 1;
 	}
 	
-	public String verificaInterrupcao() {
-		String interrupcaoTemp;
+	public String verificaInterrupcao(int i) {
+		InterrupcaoTimer interrupcao = this.filaInterrupcoes.get(i);
 		
-		for(int i = 0; i < filaInterrupcoes.size(); i++) {
-			if(this.contador == filaInterrupcoes.get(i).contadorInicial + filaInterrupcoes.get(i).periodo) {
-				if(filaInterrupcoes.get(i).periodica) {
-					interrupcaoTemp = filaInterrupcoes.get(i).codigo;
-					filaInterrupcoes.get(i).periodo += filaInterrupcoes.get(i).periodo;
-					filaInterrupcoes.add(filaInterrupcoes.get(i));
-					filaInterrupcoes.remove(filaInterrupcoes.get(i));
-					return interrupcaoTemp;
-				}
-				else {
-					interrupcaoTemp = filaInterrupcoes.get(i).codigo;
-					filaInterrupcoes.remove(filaInterrupcoes.get(i));
-					return interrupcaoTemp;
-				}	
+		if(this.contador == interrupcao.contadorInicial + interrupcao.periodo) {
+			if(interrupcao.periodica) {
+				interrupcao.incrementaPeriodo();
+				this.filaInterrupcoes.add(new InterrupcaoTimer(interrupcao.periodica, interrupcao.periodo, interrupcao.codigo, interrupcao.contadorInicial));
+				
+				interrupcao.invalidaInterrupcao();
+				return interrupcao.codigo;
 			}
+			else {
+				interrupcao.invalidaInterrupcao();
+				return interrupcao.codigo;
+			}	
 		}
-		return " ";
+		
+		return "Nao ha interrupcao";
 	}
 	
 	public ArrayList<InterrupcaoTimer> getFilaInterrupcoes() {
@@ -58,8 +56,13 @@ public class Timer {
 	}
 	
 	public void pedeInterrupcao(boolean periodica, int periodo, String codigo, int contadorInicial) {
-		filaInterrupcoes.add(new InterrupcaoTimer(periodica, periodo, codigo, contadorInicial));
+		this.filaInterrupcoes.add(new InterrupcaoTimer(periodica, periodo, codigo, contadorInicial));
 	}
 	
-	
+	public void limpaFilaInterrupcoes() {
+		for(int i = 0; i < this.filaInterrupcoes.size(); i++) {
+			if(!this.filaInterrupcoes.get(i).isValida())
+				this.filaInterrupcoes.remove(i);
+		}
+	}
 }

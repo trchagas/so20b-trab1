@@ -9,8 +9,8 @@ import timer.Timer;
 public class Main {
 
 	public static void main(String[] args) {
-		SistemaOperacional so = new SistemaOperacional();
 		Timer timer = new Timer();
+		SistemaOperacional so = new SistemaOperacional(timer);	
 		
 		String[] programa = new String[] {
 			    "CARGI 10",
