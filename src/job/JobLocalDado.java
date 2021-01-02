@@ -21,7 +21,7 @@ public class JobLocalDado {
 		return linhaDado;
 	}
 
-	public void setLinhasDado(int linhaDado) {
+	public void setLinhaDado(int linhaDado) {
 		this.linhaDado = linhaDado;
 	}
 }

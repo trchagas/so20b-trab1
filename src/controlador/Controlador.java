@@ -17,7 +17,6 @@ public class Controlador {
 		while(cpu.getCodigotInterrupcao() == InterrupcaoCPU.NORMAL || cpu.getCodigotInterrupcao() == InterrupcaoCPU.DORMINDO) {
 			
 			System.out.println("Tempo do timer: " + timer.tempoAtual());
-			timer.contaPassagem();
 			
 			if(cpu.getCodigotInterrupcao() == InterrupcaoCPU.NORMAL)
 				cpu.executa();
@@ -31,6 +30,7 @@ public class Controlador {
 				so.trataInterrupcaoTimer(interrupcaoTimer, job, isPeriodica);	
 			}	
 			timer.limpaFilaInterrupcoes();
+			timer.contaPassagem();
 		}
 	}
 }

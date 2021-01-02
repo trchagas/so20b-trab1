@@ -38,6 +38,7 @@ public class SistemaOperacional {
 		this.cpu = new Cpu(MEMORIA_PROGRAMA, MEMORIA_DADOS);
 		this.controlador = new Controlador();
 		timer.pedeInterrupcao(true, 4, "Interrupcao periodica do SO", timer.tempoAtual());
+		//System.out.println("Inicio de interrupcao Periodica do SO");
 	}
 		
 	public void chamaExecucao(Job job, Timer timer) {
@@ -94,7 +95,7 @@ public class SistemaOperacional {
 	public void trataInterrupcaoTimer(String codigo, Job job, boolean periodica) {
 		if(codigo != "Nao ha interrupcao") {
 			if(periodica) {
-				System.out.println("Fim de interrupcao Periodica do Timer: " + codigo);
+				System.out.println("Execucao de interrupcao Periodica do Timer: " + codigo);
 			}
 			else {
 				System.out.println("Fim de interrupcao do Timer: " + codigo);
@@ -170,14 +171,11 @@ public class SistemaOperacional {
 	      
 	      for(int i=0; i<job.getListaLocalDados().size(); i++) {
 	    	  if(job.getListaLocalDados().get(i).getNomeArquivo() == nomeArquivo) {
-	    		  job.getListaLocalDados().get(i).setLinhasDado(linhaDado);
-	    	  	  return;
-	    	  }
-	    	  else {
-	    		  job.addLocalDado(nomeArquivo, linhaDado);
+	    		  job.getListaLocalDados().get(i).setLinhaDado(linhaDado);
 	    		  return;
-	    	  } 
+	    	  }
 	      }
+	      job.addLocalDado(nomeArquivo, linhaDado);
 	      
 	    } catch (Exception e) {
 	      e.printStackTrace();
