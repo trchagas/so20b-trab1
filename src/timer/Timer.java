@@ -2,26 +2,18 @@ package timer;
 
 import java.util.ArrayList;
 
-import enums.InterrupcaoCPU;
-
 public class Timer {
 	int contador, intervalo, termino;
-	//Interrupcao interrupcao;
 	ArrayList<InterrupcaoTimer> filaInterrupcoes; 
 	
 	public Timer() {
 		this.contador = 0;
-		//this.interrupcao = Interrupcao.NORMAL;
 		this.filaInterrupcoes = new ArrayList<InterrupcaoTimer>();
 	}
 	
 	public void passagemInicio(int intervalo) {
 		this.intervalo = intervalo;
 	}
-//	
-//	public void passagemFim(int termino) {
-//		this.termino = termino;
-//	}
 	
 	public void contaPassagem() {
 		this.contador += 1;
@@ -33,7 +25,7 @@ public class Timer {
 		if(this.contador == interrupcao.contadorInicial + interrupcao.periodo) {
 			if(interrupcao.periodica) {
 				interrupcao.incrementaPeriodo();
-				this.filaInterrupcoes.add(new InterrupcaoTimer(interrupcao.periodica, interrupcao.periodo, interrupcao.codigo, interrupcao.contadorInicial));
+				this.filaInterrupcoes.add(new InterrupcaoTimer(interrupcao.idJob , interrupcao.periodica, interrupcao.periodo, interrupcao.codigo, interrupcao.contadorInicial));
 				
 				interrupcao.invalidaInterrupcao();
 				return interrupcao.codigo;
@@ -55,8 +47,8 @@ public class Timer {
 		return this.contador;
 	}
 	
-	public void pedeInterrupcao(boolean periodica, int periodo, String codigo, int contadorInicial) {
-		this.filaInterrupcoes.add(new InterrupcaoTimer(periodica, periodo, codigo, contadorInicial));
+	public void pedeInterrupcao(int idJob ,boolean periodica, int periodo, String codigo, int contadorInicial) {
+		this.filaInterrupcoes.add(new InterrupcaoTimer(idJob ,periodica, periodo, codigo, contadorInicial));
 	}
 	
 	public void limpaFilaInterrupcoes() {

@@ -1,7 +1,5 @@
 package cpu;
 
-import java.util.Arrays;
-
 import cpu.CpuEstado;
 import enums.InterrupcaoCPU;
 
@@ -18,7 +16,6 @@ public class Cpu {
 	}
 	
 	public void alteraPrograma(String[] memoriaPrograma) {
-		//Arrays.fill(this.memoriaPrograma, null);
 		this.memoriaPrograma = new String[memoriaPrograma.length];
 		
 		for(int i=0; i<memoriaPrograma.length; i++) {
@@ -28,7 +25,7 @@ public class Cpu {
 	
 	public void alteraDados(int[] memoriaDados) {
 		for(int i=0; i<memoriaDados.length; i++) {
-			memoriaDados[i] = this.memoriaDados[i];
+			this.memoriaDados[i] = memoriaDados[i];
 		}
 	}
 	
@@ -84,7 +81,6 @@ public class Cpu {
 					this.regAcumulador = this.memoriaDados[argumentoInt];
 					this.regContadorPrograma += 1;
 				} catch (Exception e) {
-					//System.out.println("Ocorreu uma violacao de memoria");
 					this.codigoInterrupcao = InterrupcaoCPU.VIOLACAO_DE_MEMORIA;
 				}
 				break;
@@ -94,7 +90,6 @@ public class Cpu {
 					this.regAcumulador = this.memoriaDados[this.memoriaDados[argumentoInt]];
 					this.regContadorPrograma += 1;
 				} catch (Exception e) {
-					//System.out.println("Ocorreu uma violacao de memoria");
 					this.codigoInterrupcao = InterrupcaoCPU.VIOLACAO_DE_MEMORIA;
 				}
 				break;
@@ -104,7 +99,6 @@ public class Cpu {
 					this.memoriaDados[argumentoInt] = this.regAcumulador;
 					this.regContadorPrograma += 1;
 				} catch (Exception e) {
-					//System.out.println("Ocorreu uma violacao de memoria");
 					this.codigoInterrupcao = InterrupcaoCPU.VIOLACAO_DE_MEMORIA;
 				}
 				break;
@@ -114,7 +108,6 @@ public class Cpu {
 					this.memoriaDados[this.memoriaDados[argumentoInt]] = this.regAcumulador;
 					this.regContadorPrograma += 1;
 				} catch (Exception e) {
-					//System.out.println("Ocorreu uma violacao de memoria");
 					this.codigoInterrupcao = InterrupcaoCPU.VIOLACAO_DE_MEMORIA;
 				}
 				break;
@@ -124,7 +117,6 @@ public class Cpu {
 					this.regAcumulador += this.memoriaDados[argumentoInt];
 					this.regContadorPrograma += 1;
 				} catch (Exception e) {
-					//System.out.println("Ocorreu uma violacao de memoria");
 					this.codigoInterrupcao = InterrupcaoCPU.VIOLACAO_DE_MEMORIA;
 				}
 				break;

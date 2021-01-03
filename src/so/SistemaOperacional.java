@@ -16,14 +16,12 @@ import java.util.Scanner;
 import controlador.Controlador;
 import cpu.Cpu;
 import cpu.CpuEstado;
+import enums.EstadoJob;
 import enums.InterrupcaoCPU;
 import job.Job;
 import timer.Timer;
 
 public class SistemaOperacional {
-	public static final int MEMORIA_PROGRAMA = 20;
-	public static final int MEMORIA_DADOS = 5;
-	
 	Cpu cpu;
 	
 	int[] dados;
@@ -33,26 +31,30 @@ public class SistemaOperacional {
 	
 	Controlador controlador;
 	
-	public SistemaOperacional(Timer timer) {
-		this.dados = new int[MEMORIA_DADOS];
-		this.cpu = new Cpu(MEMORIA_PROGRAMA, MEMORIA_DADOS);
+	public SistemaOperacional(Timer timer, int memoriaPrograma, int memoriaDados) {
+		this.dados = new int[memoriaDados];
+		this.cpu = new Cpu(memoriaPrograma, memoriaDados);
 		this.controlador = new Controlador();
-		timer.pedeInterrupcao(true, 4, "Interrupcao periodica do SO", timer.tempoAtual());
-		//System.out.println("Inicio de interrupcao Periodica do SO");
+		timer.pedeInterrupcao(0 ,true, 4, "Interrupcao periodica do SO", timer.tempoAtual());
 	}
 		
-	public void chamaExecucao(Job job, Timer timer) {
+	public void chamaExecucao(Job job, Timer timer, ArrayList<Job> filaJob) {
 		this.cpu.alteraPrograma(job.getPrograma());
+		this.cpu.alteraEstado(job.getCpuEstadoSalva());
+		if(this.cpu.getCodigotInterrupcao() == InterrupcaoCPU.DORMINDO)
+			this.cpu.resetaCodigoInterrupcao();
+		this.cpu.alteraDados(job.getDados());
 		
-		this.controlador.controlaExecucao(this.cpu, this, job, timer);
+		this.controlador.controlaExecucao(this.cpu, this, job, timer, filaJob);
 		
-		this.cpu.alteraDados(dados);
-		//System.out.println(cpu.instrucaoAtual());
-		for(int dado : dados)
-			System.out.println(dado);
+		job.setDados(this.cpu.salvaDados());
+		job.setCpuEstado(this.cpu.salvaEstado());
 		
-		job.salvaEstado(this.cpu.salvaEstado());
-		this.cpu.estadoInicializa();
+		if(job.getEstado() == EstadoJob.TERMINADO) {
+			dados = job.getDados();
+			for(int dado : dados)
+				System.out.println(dado);
+		}	
 	}
 	
 	public void trataInterrupcao(InterrupcaoCPU codigoInterrupcao, String instrucao, Job job, Timer timer) {
@@ -69,70 +71,51 @@ public class SistemaOperacional {
 		} else if (codigoInterrupcao == InterrupcaoCPU.INSTRUCAO_ILEGAL) {
 			switch(chamadaSistema) {
 				case "PARA":
-					System.out.println("Instrucao PARA executada. Encerrando execucao.");
+					System.out.println("Instrucao PARA executada. Encerrando execucao do processo com ID: " + job.getId());
+					job.setEstado(EstadoJob.TERMINADO);
 					break;
 				case "LE":
-					timer.pedeInterrupcao(false, job.getTempoES(), "Operacao E/S LE", timer.tempoAtual());
-					System.out.println("Inicio de interrupcao do Timer: Operacao E/S LE");
+					timer.pedeInterrupcao(job.getId(), false, job.getTempoES(), "Operacao E/S LE", timer.tempoAtual());
+					System.out.println("Processo bloqueado devido a inicio de interrupcao do Timer: Operacao E/S LE");
 					this.cpu.setAcumulador(leES(argumento, job));
-					job.salvaEstado(this.cpu.salvaEstado());
+					job.setCpuEstado(this.cpu.salvaEstado());
+					job.setDados(this.cpu.salvaDados());
 					this.cpu.cpuDormindo();
+					job.setEstado(EstadoJob.BLOQUEADO);
 					break;
 				case "GRAVA":
-					timer.pedeInterrupcao(false, job.getTempoES(), "Operacao E/S GRAVA", timer.tempoAtual());
-					System.out.println("Inicio de interrupcao do Timer: Operacao E/S GRAVA");
+					timer.pedeInterrupcao(job.getId(), false, job.getTempoES(), "Operacao E/S GRAVA", timer.tempoAtual());
+					System.out.println("Processo bloqueado devido a inicio de interrupcao do Timer: Operacao E/S GRAVA");
 					gravaES(this.cpu.getAcumulador(), argumento, job);
-					job.salvaEstado(this.cpu.salvaEstado());
+					job.setCpuEstado(this.cpu.salvaEstado());
+					job.setDados(this.cpu.salvaDados());
 					this.cpu.cpuDormindo();
+					job.setEstado(EstadoJob.BLOQUEADO);
 					break;
 				default:
-					System.out.println("Instrucao Ilegal. Encerrando execucao.");
+					System.out.println("Instrucao Ilegal. Encerrando execucao do processo com ID: " + job.getId());
+					job.setEstado(EstadoJob.TERMINADO);
 					
 			}
 		}
 	}
 	
-	public void trataInterrupcaoTimer(String codigo, Job job, boolean periodica) {
+	public void trataInterrupcaoTimer(String codigo, boolean periodica, ArrayList<Job> filaJob, int idCorrespondente) {
 		if(codigo != "Nao ha interrupcao") {
 			if(periodica) {
 				System.out.println("Execucao de interrupcao Periodica do Timer: " + codigo);
 			}
 			else {
-				System.out.println("Fim de interrupcao do Timer: " + codigo);
-				cpu.alteraEstado(job.getEstado());
-				cpu.resetaCodigoInterrupcao();
+				for(Job job : filaJob) {
+					if(job.getId() == idCorrespondente) {
+						System.out.println("Fim de interrupcao do Timer: " + codigo + ", pertencente ao processo com ID: " + job.getId());
+						job.setEstado(EstadoJob.PRONTO);
+					}
+				}
+					
 			}
 		}
 	}
-	
-//	private int leES(String nomeArquivo) {
-//		try {
-//			File le = new File(nomeArquivo + ".txt");
-//			Scanner myReader = new Scanner(le);
-//			if(myReader.hasNextLine()) {
-//				String novoAcumuladorString = myReader.nextLine();
-//				int novoAcumuladorInt = Integer.parseInt(novoAcumuladorString);
-//				myReader.close();
-//				return novoAcumuladorInt;
-//			} else {
-//				System.out.println("Operacao de E/S LE: Nao ha nenhum valor nesse dispositivo.");
-//			}
-//	   } catch (Exception e) {
-//	     e.printStackTrace();
-//	   }
-//		return 0;
-//	}
-//	
-//	private void gravaES(int regAcumulador, String nomeArquivo) {
-//		try {
-//		  File cria = new File(nomeArquivo + ".txt");
-//	      FileWriter escreve = new FileWriter(nomeArquivo + ".txt");
-//	      escreve.write(String.valueOf(regAcumulador + "\n"));
-//	      escreve.close();
-//	    } catch (Exception e) {
-//	      e.printStackTrace();
-//	    }
-//	}
 	
 	private int leES(String nomeArquivo, Job job) {
 		try {

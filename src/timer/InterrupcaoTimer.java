@@ -1,13 +1,15 @@
 package timer;
 
 public class InterrupcaoTimer {
+	int idJob;
 	boolean periodica;
 	int periodo;
 	String codigo;
 	int contadorInicial;
 	boolean valida;
 	
-	public InterrupcaoTimer(boolean periodica, int periodo, String codigo, int contadorInicial) {
+	public InterrupcaoTimer(int idJob ,boolean periodica, int periodo, String codigo, int contadorInicial) {
+		this.idJob = idJob;
 		this.periodica = periodica;
 		this.periodo = periodo;
 		this.codigo = codigo;
@@ -37,5 +39,9 @@ public class InterrupcaoTimer {
 	
 	public boolean isValida() {
 		return this.valida;
+	}
+	
+	public int getIdJob() {
+		return this.idJob;
 	}
 }
