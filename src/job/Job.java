@@ -14,6 +14,9 @@ public class Job {
 	int[] dados;
 	int tamDados;
 	
+	int quantum;
+	int gastoTotalCpu;
+	
 	int dataLancamento;
 	float prioridade;
 	
@@ -23,7 +26,7 @@ public class Job {
 	ArrayList<JobLocalDado> listaLocalDados;
 	int tempoES;
 	
-	public Job(String[] programa, int id, int tamDados) {
+	public Job(String[] programa, int id, int tamDados, int quantum) {
 		this.id = id+1;
 		this.programa = programa;
 		this.tamPrograma = programa.length;
@@ -38,6 +41,8 @@ public class Job {
 		this.listaLocalDados = new ArrayList<JobLocalDado>();
 		
 		this.cpuSalva = new CpuEstado();
+		
+		this.quantum = quantum;
 	}
 
 	public String[] getPrograma() {
@@ -92,5 +97,21 @@ public class Job {
 	
 	public int[] getDados() {
 		return this.dados;
+	}
+	
+	public int getQuantum() {
+		return this.quantum;
+	}
+	
+	public void setQuantum(int quantum) {
+		this.quantum = quantum;
+	}
+	
+	public void recalculaPrioridade(int fracaoQuantum) {
+		this.prioridade = (this.prioridade+fracaoQuantum)/2;
+	}
+	
+	public float getPrioridade() {
+		return this.prioridade;
 	}
 }

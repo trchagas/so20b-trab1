@@ -15,7 +15,7 @@ public class Escalonador {
 		return false;
 	}
 	
-	public boolean processosDormindo(ArrayList<Job> filaJob) {
+	public boolean processosBloqueados(ArrayList<Job> filaJob) {
 		for(Job job : filaJob) {
 			if(job.getEstado() == EstadoJob.PRONTO)
 				return false;
@@ -24,6 +24,14 @@ public class Escalonador {
 	}
 	
 	public Job getNextJob(ArrayList<Job> filaJob) {
-		return null;
+		float maiorPrioridade = 0;
+		Job job = null;
+		for(int i=0; i < filaJob.size(); i++) {
+			if(filaJob.get(i).getPrioridade() > maiorPrioridade && filaJob.get(i).getEstado() == EstadoJob.PRONTO) {
+				maiorPrioridade = filaJob.get(i).getPrioridade();
+				job = filaJob.get(i);
+			}
+		}
+		return job;
 	}
 }

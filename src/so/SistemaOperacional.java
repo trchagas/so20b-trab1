@@ -78,8 +78,8 @@ public class SistemaOperacional {
 					timer.pedeInterrupcao(job.getId(), false, job.getTempoES(), "Operacao E/S LE", timer.tempoAtual());
 					System.out.println("Processo bloqueado devido a inicio de interrupcao do Timer: Operacao E/S LE");
 					this.cpu.setAcumulador(leES(argumento, job));
-					job.setCpuEstado(this.cpu.salvaEstado());
-					job.setDados(this.cpu.salvaDados());
+//					job.setCpuEstado(this.cpu.salvaEstado());
+//					job.setDados(this.cpu.salvaDados());
 					this.cpu.cpuDormindo();
 					job.setEstado(EstadoJob.BLOQUEADO);
 					break;
@@ -87,8 +87,8 @@ public class SistemaOperacional {
 					timer.pedeInterrupcao(job.getId(), false, job.getTempoES(), "Operacao E/S GRAVA", timer.tempoAtual());
 					System.out.println("Processo bloqueado devido a inicio de interrupcao do Timer: Operacao E/S GRAVA");
 					gravaES(this.cpu.getAcumulador(), argumento, job);
-					job.setCpuEstado(this.cpu.salvaEstado());
-					job.setDados(this.cpu.salvaDados());
+//					job.setCpuEstado(this.cpu.salvaEstado());
+//					job.setDados(this.cpu.salvaDados());
 					this.cpu.cpuDormindo();
 					job.setEstado(EstadoJob.BLOQUEADO);
 					break;

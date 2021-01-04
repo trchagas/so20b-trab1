@@ -48,23 +48,41 @@ public class Main {
 		};
 		
 		ArrayList<Job> filaJob = new ArrayList<Job>();
-		filaJob.add(new Job(programa, filaJob.size(), MEMORIA_DADOS));
-		filaJob.add(new Job(programa2, filaJob.size(), MEMORIA_DADOS));
-		filaJob.add(new Job(programa3, filaJob.size(), MEMORIA_DADOS));
+		filaJob.add(new Job(programa, filaJob.size(), MEMORIA_DADOS, 5));
+		filaJob.add(new Job(programa2, filaJob.size(), MEMORIA_DADOS, 5));
+		filaJob.add(new Job(programa3, filaJob.size(), MEMORIA_DADOS, 5));
 		
 		int dataLancamento = 0;
 		boolean primeiraExecucao = true;
 		
+		int tempoCpuOciosa = 0;
+		
 		while(escalonador.haProcesso(filaJob)) {
-			for(int i=0; i<filaJob.size(); i++) {
-				if(filaJob.get(i).getEstado() != EstadoJob.TERMINADO) {
-					System.out.println("--- Execucao do processo " + (i+1) + " ---");
-					if(primeiraExecucao)
-						filaJob.get(i).setDataLancamento(dataLancamento);
-					so.chamaExecucao(filaJob.get(i), timer, filaJob);
-					dataLancamento = timer.tempoAtual();
+			if(escalonador.processosBloqueados(filaJob)) { //enquanto tiver dormindo
+				System.out.println("CPU Ociosa");
+				System.out.println("Tempo do timer: " + timer.tempoAtual());
+				tempoCpuOciosa+=1;
+				for(int i = 0; i < timer.getFilaInterrupcoes().size(); i++) {
+					int idCorrespondente = timer.getFilaInterrupcoes().get(i).getIdJob();
+					String interrupcaoTimer = timer.verificaInterrupcao(i);
+					boolean isPeriodica = timer.getFilaInterrupcoes().get(i).isPeriodica();
+					so.trataInterrupcaoTimer(interrupcaoTimer, isPeriodica, filaJob, idCorrespondente);	
 				}	
+				timer.limpaFilaInterrupcoes();
+				timer.contaPassagem();
+				
+			} else {
+				
+				Job proximoJob = escalonador.getNextJob(filaJob);
+				
+				System.out.println("--- Execucao do processo " + proximoJob.getId() + " ---");
+				if(primeiraExecucao)
+					proximoJob.setDataLancamento(dataLancamento);
+				so.chamaExecucao(proximoJob, timer, filaJob);
+				dataLancamento = timer.tempoAtual();
+				
 			}
+				
 			primeiraExecucao = false;
 		}
 		System.out.println("Execucao de todos os processos encerrada.");
