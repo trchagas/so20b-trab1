@@ -12,19 +12,16 @@ import timer.Timer;
 
 public class Controlador {
 	
-	public void controlaExecucao(Cpu cpu, SistemaOperacional so, Job job, Timer timer, ArrayList<Job> filaJob) {
+	public int controlaExecucao(Cpu cpu, SistemaOperacional so, Job jobAtual, Timer timer, ArrayList<Job> filaJob) {
 		int contadorUsoCpu = 0;
-		while(cpu.getCodigotInterrupcao() == InterrupcaoCPU.NORMAL || cpu.getCodigotInterrupcao() == InterrupcaoCPU.DORMINDO) { //tirar dormindo aqui
-			if(cpu.getCodigotInterrupcao() == InterrupcaoCPU.DORMINDO)
-				System.out.println("teste");
+		while(cpu.getCodigotInterrupcao() == InterrupcaoCPU.NORMAL) {
 			
 			System.out.println("Tempo do timer: " + timer.tempoAtual());
-			
-			if(cpu.getCodigotInterrupcao() == InterrupcaoCPU.NORMAL)
-				cpu.executa();
+		
+			cpu.executa();
 			
 			if(cpu.getCodigotInterrupcao() == InterrupcaoCPU.INSTRUCAO_ILEGAL || cpu.getCodigotInterrupcao() == InterrupcaoCPU.VIOLACAO_DE_MEMORIA) 
-				so.trataInterrupcao(cpu.getCodigotInterrupcao(), cpu.instrucaoAtual(), job, timer);
+				so.trataInterrupcao(cpu.getCodigotInterrupcao(), cpu.instrucaoAtual(), jobAtual, timer);
 				
 			for(int i = 0; i < timer.getFilaInterrupcoes().size(); i++) {
 				int idCorrespondente = timer.getFilaInterrupcoes().get(i).getIdJob();
@@ -34,18 +31,29 @@ public class Controlador {
 			}	
 			timer.limpaFilaInterrupcoes();
 			timer.contaPassagem();
-			contadorUsoCpu+=1;
+			jobAtual.incrementaTempoExecutando();
 			
-			if(contadorUsoCpu == job.getQuantum()) {
-				timer.pedeInterrupcao(job.getId(), false, 1, "Processo bloqueado por limite de quantum", timer.tempoAtual());
-				job.setEstado(EstadoJob.BLOQUEADO);
-				System.out.println("Quantum do processo com ID: " + job.getId() + " atingido. Bloqueando execucao.");
-				return;
+			for(Job job : filaJob) {
+				if(job.getEstado() == EstadoJob.BLOQUEADO)
+					job.incrementaTempoBloqueado();
 			}
 			
-			if(job.getEstado() == EstadoJob.BLOQUEADO) {
-				job.recalculaPrioridade(contadorUsoCpu/job.getQuantum());
-			}	
+			contadorUsoCpu+=1;
+			
+			if(contadorUsoCpu == jobAtual.getQuantum()) {
+				timer.pedeInterrupcao(jobAtual.getId(), false, 1, "Processo bloqueado por limite de quantum", timer.tempoAtual());
+				jobAtual.setEstado(EstadoJob.BLOQUEADO);
+				//jobAtual.incrementaVezesBloqueado();
+				System.out.println("Quantum do processo com ID: " + jobAtual.getId() + " atingido. Bloqueando execucao.");
+				//return contadorUsoCpu;
+			}
+			
+			if(jobAtual.getEstado() == EstadoJob.BLOQUEADO) {
+				jobAtual.incrementaVezesBloqueado();
+				jobAtual.recalculaPrioridade(contadorUsoCpu/jobAtual.getQuantum());
+				return contadorUsoCpu;
+			}
 		}
+		return contadorUsoCpu;
 	}
 }

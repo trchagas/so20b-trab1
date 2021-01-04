@@ -38,23 +38,24 @@ public class SistemaOperacional {
 		timer.pedeInterrupcao(0 ,true, 4, "Interrupcao periodica do SO", timer.tempoAtual());
 	}
 		
-	public void chamaExecucao(Job job, Timer timer, ArrayList<Job> filaJob) {
+	public int chamaExecucao(Job job, Timer timer, ArrayList<Job> filaJob) {
 		this.cpu.alteraPrograma(job.getPrograma());
 		this.cpu.alteraEstado(job.getCpuEstadoSalva());
-		if(this.cpu.getCodigotInterrupcao() == InterrupcaoCPU.DORMINDO)
-			this.cpu.resetaCodigoInterrupcao();
 		this.cpu.alteraDados(job.getDados());
 		
-		this.controlador.controlaExecucao(this.cpu, this, job, timer, filaJob);
+		int contadorUsoCpu = this.controlador.controlaExecucao(this.cpu, this, job, timer, filaJob);
 		
 		job.setDados(this.cpu.salvaDados());
 		job.setCpuEstado(this.cpu.salvaEstado());
 		
 		if(job.getEstado() == EstadoJob.TERMINADO) {
+			job.setHoraTermino(timer.tempoAtual());
 			dados = job.getDados();
 			for(int dado : dados)
 				System.out.println(dado);
-		}	
+		}
+		
+		return contadorUsoCpu;
 	}
 	
 	public void trataInterrupcao(InterrupcaoCPU codigoInterrupcao, String instrucao, Job job, Timer timer) {
@@ -78,18 +79,14 @@ public class SistemaOperacional {
 					timer.pedeInterrupcao(job.getId(), false, job.getTempoES(), "Operacao E/S LE", timer.tempoAtual());
 					System.out.println("Processo bloqueado devido a inicio de interrupcao do Timer: Operacao E/S LE");
 					this.cpu.setAcumulador(leES(argumento, job));
-//					job.setCpuEstado(this.cpu.salvaEstado());
-//					job.setDados(this.cpu.salvaDados());
-					this.cpu.cpuDormindo();
+					this.cpu.resetaCodigoInterrupcao();
 					job.setEstado(EstadoJob.BLOQUEADO);
 					break;
 				case "GRAVA":
 					timer.pedeInterrupcao(job.getId(), false, job.getTempoES(), "Operacao E/S GRAVA", timer.tempoAtual());
 					System.out.println("Processo bloqueado devido a inicio de interrupcao do Timer: Operacao E/S GRAVA");
 					gravaES(this.cpu.getAcumulador(), argumento, job);
-//					job.setCpuEstado(this.cpu.salvaEstado());
-//					job.setDados(this.cpu.salvaDados());
-					this.cpu.cpuDormindo();
+					this.cpu.resetaCodigoInterrupcao();
 					job.setEstado(EstadoJob.BLOQUEADO);
 					break;
 				default:
@@ -163,5 +160,9 @@ public class SistemaOperacional {
 	    } catch (Exception e) {
 	      e.printStackTrace();
 	    }
+	}
+	
+	public void cpuDormindo() {
+		this.cpu.cpuDormindo();
 	}
 }

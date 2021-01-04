@@ -15,9 +15,15 @@ public class Job {
 	int tamDados;
 	
 	int quantum;
-	int gastoTotalCpu;
+	int tempoExecutando;
 	
 	int dataLancamento;
+	int horaTermino;
+	
+	int vezesBloqueado;
+	int tempoBloqueado;
+	int vezesEscalonado;
+	
 	float prioridade;
 	
 	EstadoJob estado;
@@ -34,6 +40,14 @@ public class Job {
 		this.dados = new int[tamDados];
 		
 		this.estado = EstadoJob.PRONTO;
+		
+		this.tempoExecutando = 0;
+		
+		this.dataLancamento = -1;
+		
+		this.vezesBloqueado = 0;
+		this.tempoBloqueado = 0;
+		this.vezesEscalonado = 0;
 		
 		this.prioridade = 0.5f;
 
@@ -114,4 +128,45 @@ public class Job {
 	public float getPrioridade() {
 		return this.prioridade;
 	}
+	
+	public void setHoraTermino(int horaTermino) {
+		this.horaTermino = horaTermino;
+	}
+	
+	public int getHoraTermino() {
+		return this.horaTermino;
+	}
+
+	public int getVezesBloqueado() {
+		return this.vezesBloqueado;
+	}
+
+	public void incrementaVezesBloqueado() {
+		this.vezesBloqueado += 1;
+	}
+	
+	public int getTempoBloqueado() {
+		return this.tempoBloqueado;
+	}
+	
+	public void incrementaTempoBloqueado() {
+		this.tempoBloqueado += 1;
+	}
+	
+	public int getTempoExecutando() {
+		return this.tempoExecutando;
+	}
+	
+	public void incrementaTempoExecutando() {
+		this.tempoExecutando += 1;
+	}
+	
+	public int getVezesEscalonado() {
+		return this.vezesEscalonado;
+	}
+	
+	public void incrementaVezesEscalonado() {
+		this.vezesEscalonado += 1;
+	}
+	
 }
