@@ -108,8 +108,7 @@ public class SistemaOperacional {
 						System.out.println("Fim de interrupcao do Timer: " + codigo + ", pertencente ao processo com ID: " + job.getId());
 						job.setEstado(EstadoJob.PRONTO);
 					}
-				}
-					
+				}	
 			}
 		}
 	}
