@@ -34,6 +34,8 @@ public class Main {
 			    "CARGI 77",
 			    "SOMA 2",
 			    "ARMM 0",
+			    "GRAVA arquivo",
+				"LE arquivo",
 			    "PARA"
 		};
 		String[] programa3 = new String[] {
@@ -42,8 +44,6 @@ public class Main {
 			    "CARGI 65",
 			    "SOMA 2",
 			    "ARMM 0",
-			    "GRAVA arquivo",
-				"LE arquivo",
 			    "PARA"
 		};
 		
@@ -103,9 +103,9 @@ public class Main {
 		System.out.println("Execucao de todos os processos encerrada.");
 		
 		System.out.println("\n=== Relatório ===");
-		System.out.println(tempoCpuAtiva);
-		System.out.println(tempoCpuOciosa);
-		System.out.println(tempoTotalCpu);
+//		System.out.println(tempoCpuAtiva);
+//		System.out.println(tempoCpuOciosa);
+//		System.out.println(tempoTotalCpu);
 		
 		for(int i = 0; i < filaJob.size(); i++) {
 			Job job = filaJob.get(i);

@@ -139,13 +139,19 @@ public class SistemaOperacional {
 	private void gravaES(int regAcumulador, String nomeArquivo, Job job) {
 		try {
 		  File cria = new File(nomeArquivo + ".txt");
-	      FileWriter escreve = new FileWriter(nomeArquivo + ".txt");
-	      escreve.append(String.valueOf(regAcumulador + "\n"));
+	      FileWriter escreve = new FileWriter(nomeArquivo + ".txt", true);
+	      escreve.write(String.valueOf(regAcumulador + "\n"));
 	      
 	      int linhaDado = 0;
+	      
 	      Scanner scanner = new Scanner(cria);
-	      while(scanner.hasNextLine())
+	      
+	      while(scanner.hasNextLine()) {
+	    	  String linha = scanner.nextLine();
 	    	  linhaDado+=1;
+	      }
+	    	  
+	      
 	      escreve.close();
 	      scanner.close();
 	      
@@ -156,6 +162,7 @@ public class SistemaOperacional {
 	    	  }
 	      }
 	      job.addLocalDado(nomeArquivo, linhaDado);
+	      
 	      
 	    } catch (Exception e) {
 	      e.printStackTrace();
