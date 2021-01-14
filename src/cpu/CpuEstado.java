@@ -7,9 +7,9 @@ public class CpuEstado {
 	InterrupcaoCPU codigoInterrupcao;
 	
 	public CpuEstado() {
-		this.regContadorPrograma = 0;
-		this.regAcumulador = 0;
-		this.codigoInterrupcao = InterrupcaoCPU.NORMAL;
+		regContadorPrograma = 0;
+		regAcumulador = 0;
+		codigoInterrupcao = InterrupcaoCPU.NORMAL;
 	}
 	
 	public CpuEstado(int regContadorPrograma, int regAcumulador, InterrupcaoCPU codigoInterrupcao) {

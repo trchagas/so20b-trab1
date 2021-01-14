@@ -14,34 +14,38 @@ public class InterrupcaoTimer {
 		this.periodo = periodo;
 		this.codigo = codigo;
 		this.contadorInicial = contadorInicial;
-		this.valida = true;
+		valida = true;
 	}
 	
 	public String getCodigo() {
-		return this.codigo;
+		return codigo;
 	}
 	
 	public void setContadorInicial(int novoContadorInicial) {
-		this.contadorInicial = novoContadorInicial;
+		contadorInicial = novoContadorInicial;
 	}
 	
 	public boolean isPeriodica() {
-		return this.periodica;
+		return periodica;
 	}
 	
 	public void incrementaPeriodo() {
-		this.contadorInicial += this.periodo;
+		contadorInicial += periodo;
 	}
 	
 	public void invalidaInterrupcao() {
-		this.valida = false;
+		valida = false;
 	}
 	
 	public boolean isValida() {
-		return this.valida;
+		return valida;
 	}
 	
 	public int getIdJob() {
-		return this.idJob;
+		return idJob;
+	}
+	
+	public int getPeriodo() {
+		return periodo;
 	}
 }

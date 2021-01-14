@@ -15,6 +15,8 @@ public class Job {
 	int tamDados;
 	
 	int quantum;
+	int quantumInicial;
+	
 	int tempoExecutando;
 	
 	int dataLancamento;
@@ -35,40 +37,41 @@ public class Job {
 	public Job(String[] programa, int id, int tamDados, int quantum) {
 		this.id = id+1;
 		this.programa = programa;
-		this.tamPrograma = programa.length;
+		tamPrograma = programa.length;
 		
-		this.dados = new int[tamDados];
+		dados = new int[tamDados];
 		
-		this.estado = EstadoJob.PRONTO;
+		estado = EstadoJob.PRONTO;
 		
-		this.tempoExecutando = 0;
+		tempoExecutando = 0;
 		
-		this.dataLancamento = -1;
+		dataLancamento = -1;
 		
-		this.vezesBloqueado = 0;
-		this.tempoBloqueado = 0;
-		this.vezesEscalonado = 0;
+		vezesBloqueado = 0;
+		tempoBloqueado = 0;
+		vezesEscalonado = 0;
 		
-		this.prioridade = 0.5f;
+		prioridade = 0.5f;
 
-		this.tempoES = 2;
-		this.listaLocalDados = new ArrayList<JobLocalDado>();
+		tempoES = 2;
+		listaLocalDados = new ArrayList<JobLocalDado>();
 		
-		this.cpuSalva = new CpuEstado();
+		cpuSalva = new CpuEstado();
 		
 		this.quantum = quantum;
+		quantumInicial = quantum;
 	}
 
 	public String[] getPrograma() {
-		return this.programa;
+		return programa;
 	}
 	
 	public void setCpuEstado(CpuEstado cpuEstado) {
-		this.cpuSalva = cpuEstado;
+		cpuSalva = cpuEstado;
 	}
 	
 	public CpuEstado getCpuEstadoSalva() {
-		return this.cpuSalva;
+		return cpuSalva;
 	}
 	
 	public void setDataLancamento(int dataLancamento) {
@@ -76,11 +79,11 @@ public class Job {
 	}
 	
 	public int getDataLancamento() {
-		return this.dataLancamento;
+		return dataLancamento;
 	}
 	
 	public int getTempoES() {
-		return this.tempoES;
+		return tempoES;
 	}
 	
 	public void addLocalDado(String nomeArquivo, int linhaDado) {
@@ -88,11 +91,11 @@ public class Job {
 	}
 	
 	public ArrayList<JobLocalDado> getListaLocalDados() {
-		return this.listaLocalDados;
+		return listaLocalDados;
 	}
 	
 	public EstadoJob getEstado() {
-		return this.estado;
+		return estado;
 	}
 	
 	public void setEstado(EstadoJob estado) {
@@ -100,7 +103,7 @@ public class Job {
 	}
 	
 	public int getId() {
-		return this.id;
+		return id;
 	}
 	
 	public void setDados(int[] dados) {
@@ -110,23 +113,27 @@ public class Job {
 	}
 	
 	public int[] getDados() {
-		return this.dados;
+		return dados;
 	}
 	
 	public int getQuantum() {
-		return this.quantum;
+		return quantum;
 	}
 	
-	public void setQuantum(int quantum) {
-		this.quantum = quantum;
+	public void resetQuantum() {
+		this.quantum = quantumInicial;
 	}
 	
-	public void recalculaPrioridade(int fracaoQuantum) {
-		this.prioridade = (this.prioridade+fracaoQuantum)/2;
+	public void diminuiQuantum(int periodo) {
+		quantum -= periodo;
+	}
+	
+	public void recalculaPrioridade(float fracaoQuantum) {
+		prioridade = (prioridade+fracaoQuantum)/2f;
 	}
 	
 	public float getPrioridade() {
-		return this.prioridade;
+		return prioridade;
 	}
 	
 	public void setHoraTermino(int horaTermino) {
@@ -134,39 +141,43 @@ public class Job {
 	}
 	
 	public int getHoraTermino() {
-		return this.horaTermino;
+		return horaTermino;
 	}
 
 	public int getVezesBloqueado() {
-		return this.vezesBloqueado;
+		return vezesBloqueado;
 	}
 
 	public void incrementaVezesBloqueado() {
-		this.vezesBloqueado += 1;
+		vezesBloqueado += 1;
 	}
 	
 	public int getTempoBloqueado() {
-		return this.tempoBloqueado;
+		return tempoBloqueado;
 	}
 	
-	public void incrementaTempoBloqueado() {
-		this.tempoBloqueado += 1;
+	public void somaTempoBloqueado(int tempo) {
+		tempoBloqueado += tempo;
 	}
 	
 	public int getTempoExecutando() {
-		return this.tempoExecutando;
+		return tempoExecutando;
 	}
 	
-	public void incrementaTempoExecutando() {
-		this.tempoExecutando += 1;
+	public void somaTempoExecutando(int tempo) {
+		tempoExecutando += tempo;
 	}
 	
 	public int getVezesEscalonado() {
-		return this.vezesEscalonado;
+		return vezesEscalonado;
 	}
 	
 	public void incrementaVezesEscalonado() {
-		this.vezesEscalonado += 1;
+		vezesEscalonado += 1;
+	}
+	
+	public int getQuantumInicial() {
+		return quantumInicial;
 	}
 	
 }

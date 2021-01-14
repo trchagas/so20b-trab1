@@ -10,9 +10,9 @@ public class Cpu {
 	int[] memoriaDados;
 	
 	public Cpu(int tamInstrucoes, int tamDados) {
-		this.memoriaPrograma = new String[tamInstrucoes];
-		this.memoriaDados = new int[tamDados];
-		this.estadoInicializa();
+		memoriaPrograma = new String[tamInstrucoes];
+		memoriaDados = new int[tamDados];
+		estadoInicializa();
 	}
 	
 	public void alteraPrograma(String[] memoriaPrograma) {
@@ -30,34 +30,36 @@ public class Cpu {
 	}
 	
 	public int[] salvaDados() {
-		return this.memoriaDados;
+		return memoriaDados;
 	}
 	
 	public InterrupcaoCPU getCodigotInterrupcao() {
-		return this.codigoInterrupcao;
+		return codigoInterrupcao;
 	}
 	
 	public void resetaCodigoInterrupcao(){
-		if(this.codigoInterrupcao == InterrupcaoCPU.NORMAL) return;
+		if(codigoInterrupcao == InterrupcaoCPU.NORMAL) return;
 		
-		this.codigoInterrupcao = InterrupcaoCPU.NORMAL;
-		this.regContadorPrograma += 1;
+		codigoInterrupcao = InterrupcaoCPU.NORMAL;
+		regContadorPrograma += 1;
 	}
 	
 	public String instrucaoAtual() {
-		if(this.regContadorPrograma < this.memoriaPrograma.length)
-			return this.memoriaPrograma[this.regContadorPrograma];
+		if(regContadorPrograma < memoriaPrograma.length)
+			return memoriaPrograma[regContadorPrograma];
 		
 		return "Posicao de CPU invalida";
 	}
 	
 	public void executa() {
+		if(getCodigotInterrupcao() != InterrupcaoCPU.NORMAL) return;
+		
 		String[] comandoSeparado; 
 		String instrucao;
 		int argumentoInt = 0;
 		String argumentoString;
 		
-		comandoSeparado = this.memoriaPrograma[this.regContadorPrograma].split(" ");
+		comandoSeparado = memoriaPrograma[regContadorPrograma].split(" ");
 		
 		instrucao = comandoSeparado[0];
 		
@@ -72,97 +74,97 @@ public class Cpu {
 		
 		switch(comandoSeparado[0]) {
 			case "CARGI" :
-				this.regAcumulador = argumentoInt;
-				this.regContadorPrograma += 1;
+				regAcumulador = argumentoInt;
+				regContadorPrograma += 1;
 				break;
 				
 			case "CARGM" :
 				try {
-					this.regAcumulador = this.memoriaDados[argumentoInt];
-					this.regContadorPrograma += 1;
+					regAcumulador = memoriaDados[argumentoInt];
+					regContadorPrograma += 1;
 				} catch (Exception e) {
-					this.codigoInterrupcao = InterrupcaoCPU.VIOLACAO_DE_MEMORIA;
+					codigoInterrupcao = InterrupcaoCPU.VIOLACAO_DE_MEMORIA;
 				}
 				break;
 				
 			case "CARGX" :
 				try {
-					this.regAcumulador = this.memoriaDados[this.memoriaDados[argumentoInt]];
-					this.regContadorPrograma += 1;
+					regAcumulador = memoriaDados[memoriaDados[argumentoInt]];
+					regContadorPrograma += 1;
 				} catch (Exception e) {
-					this.codigoInterrupcao = InterrupcaoCPU.VIOLACAO_DE_MEMORIA;
+					codigoInterrupcao = InterrupcaoCPU.VIOLACAO_DE_MEMORIA;
 				}
 				break;
 				
 			case "ARMM" :
 				try {
-					this.memoriaDados[argumentoInt] = this.regAcumulador;
-					this.regContadorPrograma += 1;
+					memoriaDados[argumentoInt] = regAcumulador;
+					regContadorPrograma += 1;
 				} catch (Exception e) {
-					this.codigoInterrupcao = InterrupcaoCPU.VIOLACAO_DE_MEMORIA;
+					codigoInterrupcao = InterrupcaoCPU.VIOLACAO_DE_MEMORIA;
 				}
 				break;
 				
 			case "ARMX" :
 				try {
-					this.memoriaDados[this.memoriaDados[argumentoInt]] = this.regAcumulador;
-					this.regContadorPrograma += 1;
+					memoriaDados[memoriaDados[argumentoInt]] = regAcumulador;
+					regContadorPrograma += 1;
 				} catch (Exception e) {
-					this.codigoInterrupcao = InterrupcaoCPU.VIOLACAO_DE_MEMORIA;
+					codigoInterrupcao = InterrupcaoCPU.VIOLACAO_DE_MEMORIA;
 				}
 				break;
 				
 			case "SOMA" :
 				try {
-					this.regAcumulador += this.memoriaDados[argumentoInt];
-					this.regContadorPrograma += 1;
+					regAcumulador += memoriaDados[argumentoInt];
+					regContadorPrograma += 1;
 				} catch (Exception e) {
-					this.codigoInterrupcao = InterrupcaoCPU.VIOLACAO_DE_MEMORIA;
+					codigoInterrupcao = InterrupcaoCPU.VIOLACAO_DE_MEMORIA;
 				}
 				break;
 				
 			case "NEG" :
-				this.regAcumulador *= -1;
-				this.regContadorPrograma += 1;
+				regAcumulador *= -1;
+				regContadorPrograma += 1;
 				break;
 				
 			case "DESVZ" :
-				if(this.regAcumulador == 0)
-					this.regContadorPrograma = argumentoInt;
+				if(regAcumulador == 0)
+					regContadorPrograma = argumentoInt;
 				break;
 				
 			default :
-				this.codigoInterrupcao = InterrupcaoCPU.INSTRUCAO_ILEGAL;
+				codigoInterrupcao = InterrupcaoCPU.INSTRUCAO_ILEGAL;
 		}
 	}
 	
 	public CpuEstado salvaEstado() {
-		return new CpuEstado(this.regContadorPrograma, this.regAcumulador, this.codigoInterrupcao);
+		return new CpuEstado(regContadorPrograma, regAcumulador, codigoInterrupcao);
 	}
 	
 	public void estadoInicializa() {
 		CpuEstado cpuEstado = new CpuEstado();
-		this.regContadorPrograma = cpuEstado.regContadorPrograma;
-		this.regAcumulador = cpuEstado.regAcumulador;
-		this.codigoInterrupcao = cpuEstado.codigoInterrupcao;
+		regContadorPrograma = cpuEstado.regContadorPrograma;
+		regAcumulador = cpuEstado.regAcumulador;
+		codigoInterrupcao = cpuEstado.codigoInterrupcao;
 	}
 	
 	public void alteraEstado(CpuEstado cpuEstado) {
-		this.regContadorPrograma = cpuEstado.regContadorPrograma;
-		this.regAcumulador = cpuEstado.regAcumulador;
-		this.codigoInterrupcao = cpuEstado.codigoInterrupcao;
+		regContadorPrograma = cpuEstado.regContadorPrograma;
+		regAcumulador = cpuEstado.regAcumulador;
+		codigoInterrupcao = cpuEstado.codigoInterrupcao;
 	}
 	
 	public void setAcumulador(int novoAcumulador) {
-		this.regAcumulador = novoAcumulador;
+		regAcumulador = novoAcumulador;
 	}
 	
 	public int getAcumulador() {
-		return this.regAcumulador;
+		return regAcumulador;
 	}
 	
 	public void cpuDormindo() {
-		this.codigoInterrupcao = InterrupcaoCPU.DORMINDO;
+		codigoInterrupcao = InterrupcaoCPU.DORMINDO;
 	}
 	
 }
