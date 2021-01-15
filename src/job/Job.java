@@ -11,7 +11,7 @@ public class Job {
 	String[] programa;
 	int tamPrograma;
 	
-	int[] dados;
+	int[] dadosCPU;
 	int tamDados;
 	
 	int quantum;
@@ -31,15 +31,16 @@ public class Job {
 	EstadoJob estado;
 	CpuEstado cpuSalva;
 	
-	ArrayList<JobLocalDado> listaLocalDados;
-	int tempoES;
+	int[][] dadosES;
+	int custoES;
+	int contadorES;
 	
-	public Job(String[] programa, int id, int tamDados, int quantum) {
+	public Job(String[] programa, int id, int tamDados, int[][] dadosES, int custoES, int quantum) {
 		this.id = id+1;
 		this.programa = programa;
 		tamPrograma = programa.length;
 		
-		dados = new int[tamDados];
+		dadosCPU = new int[tamDados];
 		
 		estado = EstadoJob.PRONTO;
 		
@@ -53,8 +54,9 @@ public class Job {
 		
 		prioridade = 0.5f;
 
-		tempoES = 2;
-		listaLocalDados = new ArrayList<JobLocalDado>();
+		this.dadosES = dadosES;
+		this.custoES = custoES;
+		this.contadorES = 0;
 		
 		cpuSalva = new CpuEstado();
 		
@@ -82,16 +84,8 @@ public class Job {
 		return dataLancamento;
 	}
 	
-	public int getTempoES() {
-		return tempoES;
-	}
-	
-	public void addLocalDado(String nomeArquivo, int linhaDado) {
-		listaLocalDados.add(new JobLocalDado(nomeArquivo, linhaDado));
-	}
-	
-	public ArrayList<JobLocalDado> getListaLocalDados() {
-		return listaLocalDados;
+	public int getCustoES() {
+		return custoES;
 	}
 	
 	public EstadoJob getEstado() {
@@ -106,14 +100,14 @@ public class Job {
 		return id;
 	}
 	
-	public void setDados(int[] dados) {
-		for(int i=0; i<dados.length; i++) {
-			this.dados[i] = dados[i];
+	public void setDados(int[] dadosCPU) {
+		for(int i=0; i<dadosCPU.length; i++) {
+			this.dadosCPU[i] = dadosCPU[i];
 		}
 	}
 	
 	public int[] getDados() {
-		return dados;
+		return dadosCPU;
 	}
 	
 	public int getQuantum() {
@@ -178,6 +172,18 @@ public class Job {
 	
 	public int getQuantumInicial() {
 		return quantumInicial;
+	}
+	
+	public void incrementaContadorES() {
+		contadorES +=1 ;
+	}
+	
+	public int leDadoES(int dispositivo) {
+		return dadosES[dispositivo][contadorES];
+	}
+	
+	public void gravaDadoES(int dispositivo, int acumulador) {
+		dadosES[dispositivo][contadorES] = acumulador;
 	}
 	
 }

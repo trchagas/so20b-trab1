@@ -133,8 +133,8 @@ public class SistemaOperacional {
 		
 	}
 	
-	public void adicionaJob(String[] programa, int quantum) {
-		filaJob.add(new Job(programa, filaJob.size(), MEMORIA_DADOS, 5));
+	public void adicionaJob(String[] programa, int[][] dados, int custoES, int quantum) {
+		filaJob.add(new Job(programa, filaJob.size(), MEMORIA_DADOS, dados, custoES, quantum));
 	}
 		
 	public int chamaExecucao() {
@@ -166,12 +166,13 @@ public class SistemaOperacional {
 		vezesSOexecutado+=1;
 		
 		String[] comandoSeparado = instrucao.split(" ");
-		String argumento = "default";
+		int argumento = 0;
 		
 		String chamadaSistema = comandoSeparado[0];
 		
-		if(instrucao.split(" ").length > 1)
-			argumento = comandoSeparado[1];
+		if(instrucao.split(" ").length > 1) {
+			argumento = Integer.parseInt(comandoSeparado[1]);
+		}
 		
 		if (codigoInterrupcao == InterrupcaoCPU.VIOLACAO_DE_MEMORIA) {
 			System.out.println("Ocorreu uma Violacao de Memoria. Encerrando execucao.");
@@ -184,18 +185,24 @@ public class SistemaOperacional {
 					jobAtual.setEstado(EstadoJob.TERMINADO);
 					break;
 				case "LE":
-					timer.pedeInterrupcao(jobAtual.getId(), false, jobAtual.getTempoES(), "Operacao E/S LE", timer.tempoAtual());
+					timer.pedeInterrupcao(jobAtual.getId(), false, jobAtual.getCustoES(), "Operacao E/S LE", timer.tempoAtual());
 					System.out.println("Processo bloqueado devido a inicio de interrupcao do Timer: Operacao E/S LE");
-					cpu.setAcumulador(leES(argumento, jobAtual));
+					
+					cpu.setAcumulador(jobAtual.leDadoES(argumento));
+					jobAtual.incrementaContadorES();
+					
 					cpu.resetaCodigoInterrupcao();
 					jobAtual.setEstado(EstadoJob.BLOQUEADO);
 					jobAtual.incrementaVezesBloqueado();
 					jobAtual.recalculaPrioridade((float)jobAtual.getQuantum()/(float)jobAtual.getQuantumInicial());
 					break;
 				case "GRAVA":
-					timer.pedeInterrupcao(jobAtual.getId(), false, jobAtual.getTempoES(), "Operacao E/S GRAVA", timer.tempoAtual());
+					timer.pedeInterrupcao(jobAtual.getId(), false, jobAtual.getCustoES(), "Operacao E/S GRAVA", timer.tempoAtual());
 					System.out.println("Processo bloqueado devido a inicio de interrupcao do Timer: Operacao E/S GRAVA");
-					gravaES(cpu.getAcumulador(), argumento, jobAtual);
+					
+					jobAtual.gravaDadoES(argumento, cpu.getAcumulador());
+					jobAtual.incrementaContadorES();
+					
 					cpu.resetaCodigoInterrupcao();
 					jobAtual.setEstado(EstadoJob.BLOQUEADO);
 					jobAtual.incrementaVezesBloqueado();
@@ -244,61 +251,5 @@ public class SistemaOperacional {
 			if(job.getEstado() == EstadoJob.BLOQUEADO)
 				job.incrementaTempoBloqueado();
 		}
-	}
-	
-	private int leES(String nomeArquivo, Job job) {
-		try {
-			File le = new File(nomeArquivo + ".txt");
-			Scanner scanner = new Scanner(le);
-			
-			for(int i=0; i<job.getListaLocalDados().size(); i++) {
-				if(Files.readAllLines(Paths.get(nomeArquivo + ".txt")).get(job.getListaLocalDados().get(i).getLinhaDado()) != null) {
-					String novoAcumuladorString = Files.readAllLines(Paths.get(nomeArquivo + ".txt")).get(job.getListaLocalDados().get(i).getLinhaDado());
-					int novoAcumuladorInt = Integer.parseInt(novoAcumuladorString);
-					scanner.close();
-					return novoAcumuladorInt;
-				} else {
-					System.out.println("Operacao de E/S LE: Nao ha nenhum valor nesse dispositivo.");
-				}
-			}
-			scanner.close();
-					
-	   } catch (Exception e) {
-	     e.printStackTrace();
-	   }
-	   return cpu.getAcumulador();
-	}
-	
-	private void gravaES(int regAcumulador, String nomeArquivo, Job job) {
-		try {
-		  File cria = new File(nomeArquivo + ".txt");
-	      FileWriter escreve = new FileWriter(nomeArquivo + ".txt", true);
-	      escreve.write(String.valueOf(regAcumulador + "\n"));
-	      
-	      int linhaDado = 0;
-	      
-	      Scanner scanner = new Scanner(cria);
-	      
-	      while(scanner.hasNextLine()) {
-	    	  String linha = scanner.nextLine();
-	    	  linhaDado+=1;
-	      }
-	    	  
-	      
-	      escreve.close();
-	      scanner.close();
-	      
-	      for(int i=0; i<job.getListaLocalDados().size(); i++) {
-	    	  if(job.getListaLocalDados().get(i).getNomeArquivo() == nomeArquivo) {
-	    		  job.getListaLocalDados().get(i).setLinhaDado(linhaDado);
-	    		  return;
-	    	  }
-	      }
-	      job.addLocalDado(nomeArquivo, linhaDado);
-	      
-	      
-	    } catch (Exception e) {
-	      e.printStackTrace();
-	    }
 	}
 }
