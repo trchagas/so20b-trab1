@@ -20,6 +20,8 @@ public class Controlador {
 			
 			cpu.executa();
 			
+			so.contaTempoBloqueado();
+			
 			if(cpu.getCodigotInterrupcao() == InterrupcaoCPU.INSTRUCAO_ILEGAL || cpu.getCodigotInterrupcao() == InterrupcaoCPU.VIOLACAO_DE_MEMORIA) {
 				so.trataInterrupcao(cpu.getCodigotInterrupcao(), cpu.instrucaoAtual());
 				houveInterrupcao = true;
@@ -38,9 +40,10 @@ public class Controlador {
 			timer.limpaFilaInterrupcoes();
 			timer.contaPassagem();
 			
+			
 			contadorUsoCpu+=1;
 			
-			if(houveInterrupcao)
+			if(houveInterrupcao || cpu.getCodigotInterrupcao() == InterrupcaoCPU.DORMINDO)
 				return contadorUsoCpu;
 		}
 	}

@@ -52,7 +52,7 @@ public class Cpu {
 	}
 	
 	public void executa() {
-		if(getCodigotInterrupcao() != InterrupcaoCPU.NORMAL) return;
+		if(codigoInterrupcao != InterrupcaoCPU.NORMAL) return;
 		
 		String[] comandoSeparado; 
 		String instrucao;

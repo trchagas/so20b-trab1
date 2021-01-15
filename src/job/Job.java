@@ -156,8 +156,8 @@ public class Job {
 		return tempoBloqueado;
 	}
 	
-	public void somaTempoBloqueado(int tempo) {
-		tempoBloqueado += tempo;
+	public void incrementaTempoBloqueado() {
+		tempoBloqueado += 1;
 	}
 	
 	public int getTempoExecutando() {
