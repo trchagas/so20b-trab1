@@ -201,7 +201,7 @@ public class SistemaOperacional {
 					jobAtual.incrementaVezesBloqueado();
 					
 					if(!prioridadeFixa)
-						jobAtual.recalculaPrioridade((float)quantumRestante/(float)quantumInicial);
+						jobAtual.recalculaPrioridade((float)(quantumInicial-quantumRestante)/(float)quantumInicial);
 					
 					break;
 				case "GRAVA":
@@ -216,7 +216,7 @@ public class SistemaOperacional {
 					jobAtual.incrementaVezesBloqueado();
 					
 					if(!prioridadeFixa)
-						jobAtual.recalculaPrioridade((float)quantumRestante/(float)quantumInicial);
+						jobAtual.recalculaPrioridade((float)(quantumInicial-quantumRestante)/(float)quantumInicial);
 					
 					break;
 				default:
