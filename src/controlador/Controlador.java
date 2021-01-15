@@ -1,13 +1,8 @@
 package controlador;
 
-import java.util.ArrayList;
-
 import cpu.Cpu;
-import enums.EstadoJob;
 import enums.InterrupcaoCPU;
-import job.Job;
 import so.SistemaOperacional;
-import timer.InterrupcaoTimer;
 import timer.Timer;
 
 public class Controlador {

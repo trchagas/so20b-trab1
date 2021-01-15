@@ -2,20 +2,13 @@ package so;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import controlador.Controlador;
 import cpu.Cpu;
-import cpu.CpuEstado;
 import enums.EstadoJob;
 import enums.InterrupcaoCPU;
 import escalonador.Escalonador;
@@ -132,9 +125,9 @@ public class SistemaOperacional {
 		System.out.println("Tempo CPU ativa: " + tempoCpuAtiva);
 		System.out.println("Tempo ocioso da CPU: " + tempoCpuOciosa);
 		System.out.println("Quantas vezes o SO executou: " + vezesSOexecutado);
-		System.out.println("Vezes que houve interrupcao por Violacao de Memoria " + vezesViolacaoMemoria);
-		System.out.println("Vezes que houve interrupcao por Instrucao Ilegal " + vezesIntrucaoIlegal);
-		System.out.println("Vezes que houve interrupcao por Termino de Quantum " + vezesQuantumTerminado);
+		System.out.println("Vezes que houve interrupcao por Violacao de Memoria: " + vezesViolacaoMemoria);
+		System.out.println("Vezes que houve interrupcao por Instrucao Ilegal: " + vezesIntrucaoIlegal);
+		System.out.println("Vezes que houve interrupcao por Termino de Quantum: " + vezesQuantumTerminado);
 		System.out.println("Quantidade de trocas de processo: " + numTrocasDeProcesso);
 //		System.out.println("Quantidade de trocas por preempcao: " +);
 		
@@ -145,7 +138,6 @@ public class SistemaOperacional {
 	}
 		
 	public int chamaExecucao() {
-		//System.out.println(jobAtual.getId());
 		if(cpu.getCodigotInterrupcao() != InterrupcaoCPU.DORMINDO) {
 			cpu.alteraPrograma(jobAtual.getPrograma());
 			cpu.alteraEstado(jobAtual.getCpuEstadoSalva());
