@@ -14,9 +14,6 @@ public class Job {
 	int[] dadosCPU;
 	int tamDados;
 	
-	int quantum;
-	int quantumInicial;
-	
 	int tempoExecutando;
 	
 	int dataLancamento;
@@ -25,6 +22,7 @@ public class Job {
 	int vezesBloqueado;
 	int tempoBloqueado;
 	int vezesEscalonado;
+	int vezesPreempcao;
 	
 	float prioridade;
 	
@@ -35,7 +33,7 @@ public class Job {
 	int custoES;
 	int contadorES;
 	
-	public Job(String[] programa, int id, int tamDados, int[][] dadosES, int custoES, int quantum) {
+	public Job(String[] programa, int id, int tamDados, int[][] dadosES, int custoES) {
 		this.id = id+1;
 		this.programa = programa;
 		tamPrograma = programa.length;
@@ -51,6 +49,7 @@ public class Job {
 		vezesBloqueado = 0;
 		tempoBloqueado = 0;
 		vezesEscalonado = 0;
+		vezesPreempcao = 0;
 		
 		prioridade = 0.5f;
 
@@ -59,9 +58,6 @@ public class Job {
 		this.contadorES = 0;
 		
 		cpuSalva = new CpuEstado();
-		
-		this.quantum = quantum;
-		quantumInicial = quantum;
 	}
 
 	public String[] getPrograma() {
@@ -108,18 +104,6 @@ public class Job {
 	
 	public int[] getDados() {
 		return dadosCPU;
-	}
-	
-	public int getQuantum() {
-		return quantum;
-	}
-	
-	public void resetQuantum() {
-		this.quantum = quantumInicial;
-	}
-	
-	public void diminuiQuantum(int periodo) {
-		quantum -= periodo;
 	}
 	
 	public void recalculaPrioridade(float fracaoQuantum) {
@@ -170,10 +154,6 @@ public class Job {
 		vezesEscalonado += 1;
 	}
 	
-	public int getQuantumInicial() {
-		return quantumInicial;
-	}
-	
 	public void incrementaContadorES() {
 		contadorES +=1 ;
 	}
@@ -184,6 +164,14 @@ public class Job {
 	
 	public void gravaDadoES(int dispositivo, int acumulador) {
 		dadosES[dispositivo][contadorES] = acumulador;
+	}
+	
+	public void incrementaVezesPreempcao() {
+		vezesPreempcao += 1;
+	}
+	
+	public int getVezesPreempcao() {
+		return vezesPreempcao;
 	}
 	
 }

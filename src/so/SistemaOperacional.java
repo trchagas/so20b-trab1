@@ -2,10 +2,7 @@ package so;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import controlador.Controlador;
 import cpu.Cpu;
@@ -43,9 +40,13 @@ public class SistemaOperacional {
 	int vezesSOexecutado;
 	int vezesViolacaoMemoria;
 	int vezesIntrucaoIlegal;
-	int vezesQuantumTerminado;
+	int vezesPreempcao;
 	
-	public SistemaOperacional() {
+	int quantumInicial;
+	int quantumTemp;
+	boolean prioridadeFixa;
+	
+	public SistemaOperacional(int quantum, boolean prioridadeFixa) {
 		dados = new int[MEMORIA_DADOS];
 		cpu = new Cpu(MEMORIA_PROGRAMA, MEMORIA_DADOS);
 		controlador = new Controlador();
@@ -66,7 +67,11 @@ public class SistemaOperacional {
 		vezesSOexecutado = 0;
 		vezesViolacaoMemoria = 0;
 		vezesIntrucaoIlegal = 0;
-		vezesQuantumTerminado = 0;
+		vezesPreempcao = 0;
+		
+		quantumInicial = quantum;
+		quantumTemp = quantum;
+		this.prioridadeFixa = prioridadeFixa;
 	}
 	
 	public void executa() {
@@ -76,7 +81,7 @@ public class SistemaOperacional {
 			
 			if(!escalonador.processosBloqueados(filaJob)) {
 				jobAtual = escalonador.getNextJob(filaJob);
-				jobAtual.resetQuantum();
+				quantumTemp = quantumInicial;
 				numTrocasDeProcesso +=1 ;
 				jobAtual.incrementaVezesEscalonado();
 				
@@ -100,6 +105,7 @@ public class SistemaOperacional {
 			
 		}
 		System.out.println("Execucao de todos os processos encerrada.");
+		System.out.println("Tempo final do timer: " + timer.tempoAtual());
 		
 		imprimeRelatorio();
 	}
@@ -118,7 +124,7 @@ public class SistemaOperacional {
 			System.out.println("Tempo bloqueado: " + job.getTempoBloqueado());
 			System.out.println("Vezes que foi bloqueado: " + job.getVezesBloqueado());
 			System.out.println("Vezes que foi escalonado: " + job.getVezesEscalonado());
-//			System.out.println("Vezes que perdeu a CPU por preempcao: " + );
+			System.out.println("Vezes que perdeu a CPU por preempcao: " + job.getVezesPreempcao());
 		}
 		
 		System.out.println("\nTempos Totais:");
@@ -127,14 +133,13 @@ public class SistemaOperacional {
 		System.out.println("Quantas vezes o SO executou: " + vezesSOexecutado);
 		System.out.println("Vezes que houve interrupcao por Violacao de Memoria: " + vezesViolacaoMemoria);
 		System.out.println("Vezes que houve interrupcao por Instrucao Ilegal: " + vezesIntrucaoIlegal);
-		System.out.println("Vezes que houve interrupcao por Termino de Quantum: " + vezesQuantumTerminado);
 		System.out.println("Quantidade de trocas de processo: " + numTrocasDeProcesso);
-//		System.out.println("Quantidade de trocas por preempcao: " +);
+		System.out.println("Quantidade de trocas por preempcao: " + vezesPreempcao);
 		
 	}
 	
-	public void adicionaJob(String[] programa, int[][] dados, int custoES, int quantum) {
-		filaJob.add(new Job(programa, filaJob.size(), MEMORIA_DADOS, dados, custoES, quantum));
+	public void adicionaJob(String[] programa, int[][] dados, int custoES) {
+		filaJob.add(new Job(programa, filaJob.size(), MEMORIA_DADOS, dados, custoES));
 	}
 		
 	public int chamaExecucao() {
@@ -194,7 +199,10 @@ public class SistemaOperacional {
 					cpu.resetaCodigoInterrupcao();
 					jobAtual.setEstado(EstadoJob.BLOQUEADO);
 					jobAtual.incrementaVezesBloqueado();
-					jobAtual.recalculaPrioridade((float)jobAtual.getQuantum()/(float)jobAtual.getQuantumInicial());
+					
+					if(!prioridadeFixa)
+						jobAtual.recalculaPrioridade((float)quantumTemp/(float)quantumInicial);
+					
 					break;
 				case "GRAVA":
 					timer.pedeInterrupcao(jobAtual.getId(), false, jobAtual.getCustoES(), "Operacao E/S GRAVA", timer.tempoAtual());
@@ -206,7 +214,10 @@ public class SistemaOperacional {
 					cpu.resetaCodigoInterrupcao();
 					jobAtual.setEstado(EstadoJob.BLOQUEADO);
 					jobAtual.incrementaVezesBloqueado();
-					jobAtual.recalculaPrioridade((float)jobAtual.getQuantum()/(float)jobAtual.getQuantumInicial());
+					
+					if(!prioridadeFixa)
+						jobAtual.recalculaPrioridade((float)quantumTemp/(float)quantumInicial);
+					
 					break;
 				default:
 					System.out.println("Instrucao Ilegal. Encerrando execucao do processo com ID = " + jobAtual.getId());
@@ -221,14 +232,13 @@ public class SistemaOperacional {
 		if(codigo != "Nao ha interrupcao") {
 			if(periodica) {
 				System.out.println("Execucao de interrupcao Periodica do Timer: " + codigo);
-				jobAtual.diminuiQuantum(periodo);
-				if(jobAtual.getQuantum() <= 0) {
-					jobAtual.setEstado(EstadoJob.BLOQUEADO);
-					jobAtual.incrementaVezesBloqueado();
-					jobAtual.recalculaPrioridade(1);
-					timer.pedeInterrupcao(jobAtual.getId(), false, 1, "Processo bloqueado por limite de quantum", timer.tempoAtual());
-					System.out.println("Quantum do processo com ID = " + jobAtual.getId() + " atingido. Bloqueando execucao.");
-					vezesQuantumTerminado+=1;
+				quantumTemp -= periodo;
+				if(quantumTemp <= 0) {
+					if(!prioridadeFixa)
+						jobAtual.recalculaPrioridade(0);
+					System.out.println("Quantum do processo com ID = " + jobAtual.getId() + " atingido.");
+					vezesPreempcao+=1;
+					jobAtual.incrementaVezesPreempcao();
 					return true;
 				}
 					

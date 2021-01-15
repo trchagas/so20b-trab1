@@ -5,7 +5,10 @@ import so.SistemaOperacional;
 public class Main {
 
 	public static void main(String[] args) {
-		SistemaOperacional so = new SistemaOperacional();
+		int quantum = 3;
+		boolean prioridadeFixa = false;
+		
+		SistemaOperacional so = new SistemaOperacional(quantum, prioridadeFixa);
 		
 		String[] programa1 = new String[] {
 			    "CARGI 10",
@@ -23,7 +26,6 @@ public class Main {
 				{7,8,9}
 			};
 		int custoES1 = 2;
-		int quantum1 = 3;
 		
 		String[] programa2 = new String[] {
 				"CARGI 15",
@@ -41,7 +43,6 @@ public class Main {
 				{70,80,90}
 			};
 		int custoES2 = 3;
-		int quantum2 = 4;
 		
 		String[] programa3 = new String[] {
 			    "CARGI 25",
@@ -57,11 +58,10 @@ public class Main {
 				{35,40,45}
 			};
 		int custoES3 = 4;
-		int quantum3 = 5;
 		
-		so.adicionaJob(programa1, dadosES1, custoES1, quantum1);
-		so.adicionaJob(programa2, dadosES2, custoES2, quantum2);
-		so.adicionaJob(programa3, dadosES3, custoES3, quantum3);
+		so.adicionaJob(programa1, dadosES1, custoES1);
+		so.adicionaJob(programa2, dadosES2, custoES2);
+		so.adicionaJob(programa3, dadosES3, custoES3);
 		
 		so.executa();
 	}
