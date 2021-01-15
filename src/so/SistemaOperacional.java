@@ -43,7 +43,7 @@ public class SistemaOperacional {
 	int vezesPreempcao;
 	
 	int quantumInicial;
-	int quantumTemp;
+	int quantumRestante;
 	boolean prioridadeFixa;
 	
 	public SistemaOperacional(int quantum, boolean prioridadeFixa) {
@@ -70,7 +70,7 @@ public class SistemaOperacional {
 		vezesPreempcao = 0;
 		
 		quantumInicial = quantum;
-		quantumTemp = quantum;
+		quantumRestante = quantum;
 		this.prioridadeFixa = prioridadeFixa;
 	}
 	
@@ -81,7 +81,7 @@ public class SistemaOperacional {
 			
 			if(!escalonador.processosBloqueados(filaJob)) {
 				jobAtual = escalonador.getNextJob(filaJob);
-				quantumTemp = quantumInicial;
+				quantumRestante = quantumInicial;
 				numTrocasDeProcesso +=1 ;
 				jobAtual.incrementaVezesEscalonado();
 				
@@ -201,7 +201,7 @@ public class SistemaOperacional {
 					jobAtual.incrementaVezesBloqueado();
 					
 					if(!prioridadeFixa)
-						jobAtual.recalculaPrioridade((float)quantumTemp/(float)quantumInicial);
+						jobAtual.recalculaPrioridade((float)quantumRestante/(float)quantumInicial);
 					
 					break;
 				case "GRAVA":
@@ -216,7 +216,7 @@ public class SistemaOperacional {
 					jobAtual.incrementaVezesBloqueado();
 					
 					if(!prioridadeFixa)
-						jobAtual.recalculaPrioridade((float)quantumTemp/(float)quantumInicial);
+						jobAtual.recalculaPrioridade((float)quantumRestante/(float)quantumInicial);
 					
 					break;
 				default:
@@ -232,10 +232,10 @@ public class SistemaOperacional {
 		if(codigo != "Nao ha interrupcao") {
 			if(periodica) {
 				System.out.println("Execucao de interrupcao Periodica do Timer: " + codigo);
-				quantumTemp -= periodo;
-				if(quantumTemp <= 0) {
+				quantumRestante -= periodo;
+				if(quantumRestante <= 0) {
 					if(!prioridadeFixa)
-						jobAtual.recalculaPrioridade(0);
+						jobAtual.recalculaPrioridade(1f);
 					System.out.println("Quantum do processo com ID = " + jobAtual.getId() + " atingido.");
 					vezesPreempcao+=1;
 					jobAtual.incrementaVezesPreempcao();

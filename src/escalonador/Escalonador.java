@@ -24,10 +24,10 @@ public class Escalonador {
 	}
 	
 	public Job getNextJob(ArrayList<Job> filaJob) {
-		float maiorPrioridade = 0;
+		float maiorPrioridade = 1f;
 		Job job = null;
 		for(int i=0; i < filaJob.size(); i++) {
-			if(filaJob.get(i).getPrioridade() > maiorPrioridade && filaJob.get(i).getEstado() == EstadoJob.PRONTO) {
+			if(filaJob.get(i).getPrioridade() < maiorPrioridade && filaJob.get(i).getEstado() == EstadoJob.PRONTO) {
 				maiorPrioridade = filaJob.get(i).getPrioridade();
 				job = filaJob.get(i);
 			}
