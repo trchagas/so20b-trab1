@@ -1,7 +1,5 @@
 package job;
 
-import java.util.ArrayList;
-
 import cpu.CpuEstado;
 import enums.EstadoJob;
 
@@ -96,13 +94,13 @@ public class Job {
 		return id;
 	}
 	
-	public void setDados(int[] dadosCPU) {
+	public void setDadosCPU(int[] dadosCPU) {
 		for(int i=0; i<dadosCPU.length; i++) {
 			this.dadosCPU[i] = dadosCPU[i];
 		}
 	}
 	
-	public int[] getDados() {
+	public int[] getDadosCPU() {
 		return dadosCPU;
 	}
 	
@@ -164,6 +162,18 @@ public class Job {
 	
 	public void gravaDadoES(int dispositivo, int acumulador) {
 		dadosES[dispositivo][contadorES] = acumulador;
+	}
+	
+	public int getNumDispositivosES() {
+		return dadosES.length;
+	}
+	
+	public boolean haMemoriaDispositivoES(int dispositivo) {
+		return contadorES < dadosES[dispositivo].length;
+	}
+	
+	public int[][] getDadosES(){
+		return dadosES;
 	}
 	
 	public void incrementaVezesPreempcao() {

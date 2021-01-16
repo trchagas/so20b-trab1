@@ -18,10 +18,8 @@ public class SistemaOperacional {
 	
 	Cpu cpu;
 	
-	int[] dados;
-	
-	File dispositivosES;
-	FileWriter escritaES;
+	int[] dadosCPU;
+	int[][] dadosES;
 	
 	Controlador controlador;
 	Escalonador escalonador;
@@ -47,7 +45,7 @@ public class SistemaOperacional {
 	boolean prioridadeFixa;
 	
 	public SistemaOperacional(int quantum, boolean prioridadeFixa) {
-		dados = new int[MEMORIA_DADOS];
+		//dadosCPU = new int[MEMORIA_DADOS];
 		cpu = new Cpu(MEMORIA_PROGRAMA, MEMORIA_DADOS);
 		controlador = new Controlador();
 		escalonador = new Escalonador();
@@ -81,6 +79,7 @@ public class SistemaOperacional {
 			
 			if(!escalonador.processosBloqueados(filaJob)) {
 				jobAtual = escalonador.getNextJob(filaJob);
+				
 				quantumRestante = quantumInicial;
 				numTrocasDeProcesso +=1 ;
 				jobAtual.incrementaVezesEscalonado();
@@ -104,7 +103,7 @@ public class SistemaOperacional {
 			}
 			
 		}
-		System.out.println("Execucao de todos os processos encerrada.");
+		System.out.println("\nExecucao de todos os processos encerrada.");
 		System.out.println("Tempo final do timer: " + timer.tempoAtual());
 		
 		imprimeRelatorio();
@@ -146,21 +145,31 @@ public class SistemaOperacional {
 		if(cpu.getCodigotInterrupcao() != InterrupcaoCPU.DORMINDO) {
 			cpu.alteraPrograma(jobAtual.getPrograma());
 			cpu.alteraEstado(jobAtual.getCpuEstadoSalva());
-			cpu.alteraDados(jobAtual.getDados());
+			cpu.alteraDados(jobAtual.getDadosCPU());
 		}
 		
 		int contadorUsoCpu = controlador.controlaExecucao(cpu, this, timer);
 		
 		if(cpu.getCodigotInterrupcao() != InterrupcaoCPU.DORMINDO) {
-			jobAtual.setDados(cpu.salvaDados());
+			jobAtual.setDadosCPU(cpu.salvaDados());
 			jobAtual.setCpuEstado(cpu.salvaEstado());	
 		
 			if(jobAtual.getEstado() == EstadoJob.TERMINADO) {
 				System.out.println("Resultados do processo com ID = " + jobAtual.getId() + " foram:");
 				jobAtual.setHoraTermino(timer.tempoAtual());
-				dados = jobAtual.getDados();
-				for(int dado : dados)
+				
+				dadosCPU = jobAtual.getDadosCPU();
+				System.out.println("Dados da CPU: ");
+				for(int dado : dadosCPU)
 					System.out.println(dado);
+				
+				dadosES = jobAtual.getDadosES();
+				System.out.println("Dados de E/S: ");
+				for(int[] linhaDado : dadosES) {
+					for(int dado : linhaDado)
+						System.out.print(dado + " ");
+					System.out.println();
+				}
 			}
 		}
 		
@@ -180,7 +189,7 @@ public class SistemaOperacional {
 		}
 		
 		if (codigoInterrupcao == InterrupcaoCPU.VIOLACAO_DE_MEMORIA) {
-			System.out.println("Ocorreu uma Violacao de Memoria. Encerrando execucao.");
+			System.out.println("Ocorreu uma Violacao de Memoria na CPU. Encerrando execucao do processo com ID = " + jobAtual.getId());
 			jobAtual.setEstado(EstadoJob.TERMINADO);
 			vezesViolacaoMemoria+=1;
 		} else if (codigoInterrupcao == InterrupcaoCPU.INSTRUCAO_ILEGAL) {
@@ -190,39 +199,52 @@ public class SistemaOperacional {
 					jobAtual.setEstado(EstadoJob.TERMINADO);
 					break;
 				case "LE":
-					timer.pedeInterrupcao(jobAtual.getId(), false, jobAtual.getCustoES(), "Operacao E/S LE", timer.tempoAtual());
-					System.out.println("Processo bloqueado devido a inicio de interrupcao do Timer: Operacao E/S LE");
-					
-					cpu.setAcumulador(jobAtual.leDadoES(argumento));
-					jobAtual.incrementaContadorES();
-					
-					cpu.resetaCodigoInterrupcao();
-					jobAtual.setEstado(EstadoJob.BLOQUEADO);
-					jobAtual.incrementaVezesBloqueado();
-					
-					if(!prioridadeFixa)
-						jobAtual.recalculaPrioridade((float)(quantumInicial-quantumRestante)/(float)quantumInicial);
+					if(argumento >= 0 && argumento < jobAtual.getNumDispositivosES() && jobAtual.haMemoriaDispositivoES(argumento)) {
+						timer.pedeInterrupcao(jobAtual.getId(), false, jobAtual.getCustoES(), "Operacao E/S LE", timer.tempoAtual());
+						System.out.println("Processo bloqueado devido a inicio de interrupcao do Timer: Operacao E/S LE");
+						
+						cpu.setAcumulador(jobAtual.leDadoES(argumento));
+						jobAtual.incrementaContadorES();
+						
+						cpu.resetaCodigoInterrupcao();
+						jobAtual.setEstado(EstadoJob.BLOQUEADO);
+						jobAtual.incrementaVezesBloqueado();
+						
+						if(!prioridadeFixa)
+							jobAtual.recalculaPrioridade((float)(quantumInicial-quantumRestante)/(float)quantumInicial);
+					} else {
+						System.out.println("Ocorreu uma Violacao de Memoria na Operacao E/S LE. Encerrando execucao do processo com ID = " + jobAtual.getId());
+						jobAtual.setEstado(EstadoJob.TERMINADO);
+						vezesViolacaoMemoria+=1;
+						return;
+					}
 					
 					break;
 				case "GRAVA":
-					timer.pedeInterrupcao(jobAtual.getId(), false, jobAtual.getCustoES(), "Operacao E/S GRAVA", timer.tempoAtual());
-					System.out.println("Processo bloqueado devido a inicio de interrupcao do Timer: Operacao E/S GRAVA");
-					
-					jobAtual.gravaDadoES(argumento, cpu.getAcumulador());
-					jobAtual.incrementaContadorES();
-					
-					cpu.resetaCodigoInterrupcao();
-					jobAtual.setEstado(EstadoJob.BLOQUEADO);
-					jobAtual.incrementaVezesBloqueado();
-					
-					if(!prioridadeFixa)
-						jobAtual.recalculaPrioridade((float)(quantumInicial-quantumRestante)/(float)quantumInicial);
+					if(argumento >= 0 && argumento < jobAtual.getNumDispositivosES() && jobAtual.haMemoriaDispositivoES(argumento)) {
+						timer.pedeInterrupcao(jobAtual.getId(), false, jobAtual.getCustoES(), "Operacao E/S GRAVA", timer.tempoAtual());
+						System.out.println("Processo bloqueado devido a inicio de interrupcao do Timer: Operacao E/S GRAVA");
+						
+						jobAtual.gravaDadoES(argumento, cpu.getAcumulador());
+						jobAtual.incrementaContadorES();
+						
+						cpu.resetaCodigoInterrupcao();
+						jobAtual.setEstado(EstadoJob.BLOQUEADO);
+						jobAtual.incrementaVezesBloqueado();
+						
+						if(!prioridadeFixa)
+							jobAtual.recalculaPrioridade((float)(quantumInicial-quantumRestante)/(float)quantumInicial);
+					} else {
+						System.out.println("Ocorreu uma Violacao de Memoria na Operacao E/S GRAVA. Encerrando execucao do processo com ID = " + jobAtual.getId());
+						jobAtual.setEstado(EstadoJob.TERMINADO);
+						vezesViolacaoMemoria+=1;
+						return;
+					}
 					
 					break;
 				default:
 					System.out.println("Instrucao Ilegal. Encerrando execucao do processo com ID = " + jobAtual.getId());
 					jobAtual.setEstado(EstadoJob.TERMINADO);
-					
 			}
 			vezesIntrucaoIlegal+=1;
 		}

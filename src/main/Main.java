@@ -11,14 +11,15 @@ public class Main {
 		SistemaOperacional so = new SistemaOperacional(quantum, prioridadeFixa);
 		
 		String[] programa1 = new String[] {
-			    "CARGI 10",
-			    "ARMM 2",
-			    "CARGI 32",
-			    "SOMA 2",
-			    "ARMM 0",
-			    "GRAVA 1",
-				"LE 1",
-			    "PARA"
+				"CARGI 1",
+				"ARMM 1",
+				"SOMA 1",
+				"ARMM 0",
+				"ARMX 1",
+				"CARGI 50",
+				"NEG",
+				"ARMM 4",
+				"PARA"
 		};
 		int[][] dadosES1 = {
 				{1,2,3},
