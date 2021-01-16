@@ -43,7 +43,6 @@ public class SistemaOperacional {
 	boolean prioridadeFixa;
 	
 	public SistemaOperacional(int quantum, boolean prioridadeFixa) {
-		//dadosCPU = new int[MEMORIA_DADOS];
 		cpu = new Cpu(MEMORIA_PROGRAMA, MEMORIA_DADOS);
 		controlador = new Controlador();
 		escalonador = new Escalonador();

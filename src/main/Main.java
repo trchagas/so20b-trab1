@@ -10,6 +10,8 @@ public class Main {
 		
 		SistemaOperacional so = new SistemaOperacional(quantum, prioridadeFixa);
 		
+		//Conjunto de programas limitados por CPU
+		
 		String[] programa1 = new String[] {
 				"CARGI 10",
 				"ARMM 2",
@@ -33,16 +35,10 @@ public class Main {
 				"CARGI 0",
 				"ARMM 2",
 				"CARGM 2",
-				"DESVZ 17",
-				"CARGM 2",
-				"SOMA 1",
-				"ARMM 2",
+				"DESVZ 10",
 				"CARGI 1",
-				"NEG",
-				"SOMA 0",
-				"ARMM 0",
-				"CARGI 0",
-				"DESVZ 6",
+				"ARMM 2",
+				"DESVZ 8",
 				"PARA"
 		};
 		int[][] dadosES2 = {
