@@ -131,6 +131,8 @@ public class Cpu {
 			case "DESVZ" :
 				if(regAcumulador == 0)
 					regContadorPrograma = argumentoInt;
+				else
+					regContadorPrograma += 1;
 				break;
 				
 			default :

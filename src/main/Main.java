@@ -11,14 +11,11 @@ public class Main {
 		SistemaOperacional so = new SistemaOperacional(quantum, prioridadeFixa);
 		
 		String[] programa1 = new String[] {
-				"CARGI 1",
-				"ARMM 1",
-				"SOMA 1",
+				"CARGI 10",
+				"ARMM 2",
+				"CARGI 32",
+				"SOMA 2",
 				"ARMM 0",
-				"ARMX 1",
-				"CARGI 50",
-				"NEG",
-				"ARMM 4",
 				"PARA"
 		};
 		int[][] dadosES1 = {
@@ -29,14 +26,24 @@ public class Main {
 		int custoES1 = 2;
 		
 		String[] programa2 = new String[] {
-				"CARGI 15",
-			    "ARMM 2",
-			    "CARGI 77",
-			    "SOMA 2",
-			    "ARMM 0",
-			    "GRAVA 1",
-				"LE 1",
-			    "PARA"
+				"CARGI 6",
+				"ARMM 0",
+				"CARGI 7",
+				"ARMM 1",
+				"CARGI 0",
+				"ARMM 2",
+				"CARGM 2",
+				"DESVZ 17",
+				"CARGM 2",
+				"SOMA 1",
+				"ARMM 2",
+				"CARGI 1",
+				"NEG",
+				"SOMA 0",
+				"ARMM 0",
+				"CARGI 0",
+				"DESVZ 6",
+				"PARA"
 		};
 		int[][] dadosES2 = {
 				{10,20,30},
@@ -46,12 +53,15 @@ public class Main {
 		int custoES2 = 3;
 		
 		String[] programa3 = new String[] {
-			    "CARGI 25",
-			    "ARMM 2",
-			    "CARGI 65",
-			    "SOMA 2",
-			    "ARMM 0",
-			    "PARA"
+				"CARGI 1",
+				"ARMM 1",
+				"SOMA 1",
+				"ARMM 0",
+				"ARMX 1",
+				"CARGI 50",
+				"NEG",
+				"ARMM 4",
+				"PARA"
 		};
 		int[][] dadosES3 = {
 				{5,10,15},
