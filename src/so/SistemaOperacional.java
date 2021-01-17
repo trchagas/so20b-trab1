@@ -37,6 +37,7 @@ public class SistemaOperacional {
 	int vezesViolacaoMemoria;
 	int vezesIntrucaoIlegal;
 	int vezesPreempcao;
+	int vezesInterrupcaoPeriodica;
 	
 	int quantumInicial;
 	int quantumRestante;
@@ -63,6 +64,7 @@ public class SistemaOperacional {
 		vezesViolacaoMemoria = 0;
 		vezesIntrucaoIlegal = 0;
 		vezesPreempcao = 0;
+		vezesInterrupcaoPeriodica = 0;
 		
 		quantumInicial = quantum;
 		quantumRestante = quantum;
@@ -131,6 +133,7 @@ public class SistemaOperacional {
 		System.out.println("Quantas vezes o SO executou: " + vezesSOexecutado);
 		System.out.println("Vezes que houve interrupcao por Violacao de Memoria: " + vezesViolacaoMemoria);
 		System.out.println("Vezes que houve interrupcao por Instrucao Ilegal: " + vezesIntrucaoIlegal);
+		System.out.println("Vezes que houve interrupcao periodica do Sistema Operacional: " + vezesInterrupcaoPeriodica);
 		System.out.println("Quantidade de trocas de processo: " + numTrocasDeProcesso);
 		System.out.println("Quantidade de trocas por preempcao: " + vezesPreempcao);
 		
@@ -252,6 +255,8 @@ public class SistemaOperacional {
 	public boolean trataInterrupcaoTimer(String codigo, boolean periodica, int periodo, int idCorrespondente) {
 		if(codigo != "Nao ha interrupcao") {
 			if(periodica) {
+				vezesSOexecutado+=1;
+				vezesInterrupcaoPeriodica+=1;
 				System.out.println("Execucao de interrupcao Periodica do Timer: " + codigo);
 				quantumRestante -= periodo;
 				if(quantumRestante <= 0) {
