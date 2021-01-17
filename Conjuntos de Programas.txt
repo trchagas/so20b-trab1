@@ -38,7 +38,7 @@ programa 3
 
 Conjunto de programas com E/S
 
-programa 1:
+Programa 1:
 
 "CARGI 0",
 "ARMM 0",
@@ -60,7 +60,7 @@ programa 1:
 "GRAVA 1",
 "PARA"
 
-programa 2:
+Programa 2:
 
 "LE 0",
 "ARMM 0",
@@ -72,7 +72,7 @@ programa 2:
 "DESVZ 0",
 "PARA"
 
-programa 3:
+Programa 3:
 
 "LE 1",
 "ARMM 0",
