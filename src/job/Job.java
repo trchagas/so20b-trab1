@@ -28,10 +28,10 @@ public class Job {
 	CpuEstado cpuSalva;
 	
 	int[][] dadosES;
-	int custoES;
-	int contadorES;
+	int[] contadorES;
+	int[] custoES;
 	
-	public Job(String[] programa, int id, int tamDados, int[][] dadosES, int custoES) {
+	public Job(String[] programa, int id, int tamDados, int[][] dadosES, int custoES[]) {
 		this.id = id+1;
 		this.programa = programa;
 		tamPrograma = programa.length;
@@ -53,7 +53,7 @@ public class Job {
 
 		this.dadosES = dadosES;
 		this.custoES = custoES;
-		this.contadorES = 0;
+		this.contadorES = new int[dadosES.length];
 		
 		cpuSalva = new CpuEstado();
 	}
@@ -78,8 +78,8 @@ public class Job {
 		return dataLancamento;
 	}
 	
-	public int getCustoES() {
-		return custoES;
+	public int getCustoES(int dispositivo) {
+		return custoES[dispositivo];
 	}
 	
 	public EstadoJob getEstado() {
@@ -152,16 +152,16 @@ public class Job {
 		vezesEscalonado += 1;
 	}
 	
-	public void incrementaContadorES() {
-		contadorES +=1 ;
+	public void incrementaContadorES(int dispositivo) {
+		contadorES[dispositivo] +=1 ;
 	}
 	
 	public int leDadoES(int dispositivo) {
-		return dadosES[dispositivo][contadorES];
+		return dadosES[dispositivo][contadorES[dispositivo]];
 	}
 	
 	public void gravaDadoES(int dispositivo, int acumulador) {
-		dadosES[dispositivo][contadorES] = acumulador;
+		dadosES[dispositivo][contadorES[dispositivo]] = acumulador;
 	}
 	
 	public int getNumDispositivosES() {
@@ -169,7 +169,7 @@ public class Job {
 	}
 	
 	public boolean haMemoriaDispositivoES(int dispositivo) {
-		return contadorES < dadosES[dispositivo].length;
+		return contadorES[dispositivo] < dadosES[dispositivo].length;
 	}
 	
 	public int[][] getDadosES(){

@@ -78,8 +78,9 @@ public class SistemaOperacional {
 				jobAtual = escalonador.getNextJob(filaJob);
 				
 				quantumRestante = quantumInicial;
-				numTrocasDeProcesso +=1 ;
+				
 				jobAtual.incrementaVezesEscalonado();
+				numTrocasDeProcesso +=1 ;
 				
 				System.out.println("--- Execucao do processo " + jobAtual.getId() + " ---");
 				if(jobAtual.getDataLancamento() == -1)
@@ -92,6 +93,7 @@ public class SistemaOperacional {
 			}
 			
 			int contadorUsoCpu = chamaExecucao();
+			
 			dataLancamento = timer.tempoAtual();
 			
 			if(cpu.getCodigotInterrupcao() != InterrupcaoCPU.DORMINDO) {
@@ -134,7 +136,7 @@ public class SistemaOperacional {
 		
 	}
 	
-	public void adicionaJob(String[] programa, int[][] dados, int custoES) {
+	public void adicionaJob(String[] programa, int[][] dados, int[] custoES) {
 		filaJob.add(new Job(programa, filaJob.size(), MEMORIA_DADOS, dados, custoES));
 	}
 		
@@ -197,11 +199,11 @@ public class SistemaOperacional {
 					break;
 				case "LE":
 					if(argumento >= 0 && argumento < jobAtual.getNumDispositivosES() && jobAtual.haMemoriaDispositivoES(argumento)) {
-						timer.pedeInterrupcao(jobAtual.getId(), false, jobAtual.getCustoES(), "Operacao E/S LE", timer.tempoAtual());
+						timer.pedeInterrupcao(jobAtual.getId(), false, jobAtual.getCustoES(argumento), "Operacao E/S LE", timer.tempoAtual());
 						System.out.println("Processo bloqueado devido a inicio de interrupcao do Timer: Operacao E/S LE");
 						
 						cpu.setAcumulador(jobAtual.leDadoES(argumento));
-						jobAtual.incrementaContadorES();
+						jobAtual.incrementaContadorES(argumento);
 						
 						cpu.resetaCodigoInterrupcao();
 						jobAtual.setEstado(EstadoJob.BLOQUEADO);
@@ -219,11 +221,11 @@ public class SistemaOperacional {
 					break;
 				case "GRAVA":
 					if(argumento >= 0 && argumento < jobAtual.getNumDispositivosES() && jobAtual.haMemoriaDispositivoES(argumento)) {
-						timer.pedeInterrupcao(jobAtual.getId(), false, jobAtual.getCustoES(), "Operacao E/S GRAVA", timer.tempoAtual());
+						timer.pedeInterrupcao(jobAtual.getId(), false, jobAtual.getCustoES(argumento), "Operacao E/S GRAVA", timer.tempoAtual());
 						System.out.println("Processo bloqueado devido a inicio de interrupcao do Timer: Operacao E/S GRAVA");
 						
 						jobAtual.gravaDadoES(argumento, cpu.getAcumulador());
-						jobAtual.incrementaContadorES();
+						jobAtual.incrementaContadorES(argumento);
 						
 						cpu.resetaCodigoInterrupcao();
 						jobAtual.setEstado(EstadoJob.BLOQUEADO);
