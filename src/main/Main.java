@@ -5,8 +5,8 @@ import so.SistemaOperacional;
 public class Main {
 
 	public static void main(String[] args) {
-		int quantum = 3;
-		boolean prioridadeFixa = false;
+		int quantum = 5;
+		boolean prioridadeFixa = true;
 		
 		SistemaOperacional so = new SistemaOperacional(quantum, prioridadeFixa);
 		

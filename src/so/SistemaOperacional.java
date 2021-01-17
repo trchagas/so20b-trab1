@@ -123,7 +123,7 @@ public class SistemaOperacional {
 			System.out.println("Vezes que perdeu a CPU por preempcao: " + job.getVezesPreempcao());
 		}
 		
-		System.out.println("\nTempos Totais:");
+		System.out.println("\n--- Tempos Totais ---");
 		System.out.println("Tempo CPU ativa: " + tempoCpuAtiva);
 		System.out.println("Tempo ocioso da CPU: " + tempoCpuOciosa);
 		System.out.println("Quantas vezes o SO executou: " + vezesSOexecutado);
