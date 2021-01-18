@@ -26,7 +26,7 @@ Programa 2:
 "DESVZ 8",
 "PARA"
 
-programa 3
+Programa 3
 
 "CARGI 1",
 "ARMM 1",
