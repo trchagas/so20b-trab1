@@ -164,36 +164,7 @@ public class SistemaOperacional {
 		
 		imprimeRelatorio();
 	}
-	//################################# Relatório utilizado no Trabalho 1 #################################
-//	public void imprimeRelatorio() { 
-//		System.out.println("\n=== Relatório ===");
-//		
-//		for(int i = 0; i < filaJob.size(); i++) {
-//			Job job = filaJob.get(i);
-//			System.out.println("\n--- Processo com ID: " + job.getId() + " ---");
-//			System.out.println("Hora de inicio: " + job.getDataLancamento());
-//			System.out.println("Hora de termino: " + job.getHoraTermino());
-//			System.out.println("Tempo de retorno: " + (job.getHoraTermino()-job.getDataLancamento()));
-//			System.out.println("Tempo de CPU: " + (job.getTempoExecutando()));
-//			System.out.println("Percentual de uso da CPU: " + ((float)job.getTempoExecutando()/(float)tempoCpuAtiva) * 100f + "%");
-//			System.out.println("Tempo bloqueado: " + job.getTempoBloqueado());
-//			System.out.println("Vezes que foi bloqueado: " + job.getVezesBloqueado());
-//			System.out.println("Vezes que foi escalonado: " + job.getVezesEscalonado());
-//			System.out.println("Vezes que perdeu a CPU por preempcao: " + job.getVezesPreempcao());
-//		}
-//		
-//		System.out.println("\n--- Tempos Totais ---");
-//		System.out.println("Tempo CPU ativa: " + tempoCpuAtiva);
-//		System.out.println("Tempo ocioso da CPU: " + tempoCpuOciosa);
-//		System.out.println("Quantas vezes o SO executou: " + vezesSOexecutado);
-//		System.out.println("Vezes que houve interrupcao por Violacao de Memoria: " + vezesViolacaoMemoria);
-//		System.out.println("Vezes que houve interrupcao por Instrucao Ilegal: " + vezesIntrucaoIlegal);
-//		System.out.println("Vezes que houve interrupcao periodica do Sistema Operacional: " + vezesInterrupcaoPeriodica);
-//		System.out.println("Quantidade de trocas de processo: " + numTrocasDeProcesso);
-//		System.out.println("Quantidade de trocas por preempcao: " + vezesPreempcao);
-//		
-//	}
-	//################################# Relatório utilizado no Trabalho 2 #################################
+
 	public void imprimeRelatorio() {
 		System.out.println("\n=== Relatório ===");
 		
@@ -235,14 +206,13 @@ public class SistemaOperacional {
 		if(cpu.getCodigotInterrupcao() != InterrupcaoCPU.DORMINDO) {
 			cpu.alteraPrograma(jobAtual.getPrograma());
 			cpu.alteraEstado(jobAtual.getCpuEstadoSalva());
-			//cpu.alteraDados(jobAtual.getDadosCPU()); //função descontinuada
+
 			mmu.trocaTabelaPaginas(jobAtual.getTabelaPaginas());
 		}
 		
 		int contadorUsoCpu = controlador.controlaExecucao(cpu, this, timer);
 		
 		if(cpu.getCodigotInterrupcao() != InterrupcaoCPU.DORMINDO) {
-			//jobAtual.setDadosCPU(cpu.salvaDados()); //função descontinuada
 			jobAtual.setCpuEstado(cpu.salvaEstado());	
 		
 			if(jobAtual.getEstado() == EstadoJob.TERMINADO) {
@@ -263,11 +233,6 @@ public class SistemaOperacional {
 				for(int dado : memoriaSecundaria[jobAtual.getId()])
 					System.out.println(dado);
 					
-				
-//				dadosCPU = jobAtual.getDadosCPU(); //função descontinuada
-//				System.out.println("Dados da CPU: ");
-//				for(int dado : dadosCPU)
-//					System.out.println(dado);
 				
 				dadosES = jobAtual.getDadosES();
 				System.out.println("Dados de E/S: ");
@@ -396,7 +361,7 @@ public class SistemaOperacional {
 			idDescritorAnterior = mapaMemoriaPrincipal[contadorFIFO][1];
 		}
 		
-		//referencia o descritor em relação ao mapa
+		//referencia o descritor em relação ao contador
 		novaReferencia.setQuadroCorrespondente(contadorFIFO);
 		novaReferencia.setValido(true);
 		
@@ -423,7 +388,7 @@ public class SistemaOperacional {
 		timer.pedeInterrupcao(jobAtual.getId(), false, 4, "Interrupcao por preenchimento de quadro", timer.tempoAtual());
 		System.out.println("Inicio de interrupcao por preenchimento do quadro");
 		
-		//referencia o mapa a nova referencia
+		//coloca a nova referencia no mapa
 		mapaMemoriaPrincipal[contadorFIFO][0] = jobAtual.getId();
 		mapaMemoriaPrincipal[contadorFIFO][1] = novaReferencia.getId();
 		
